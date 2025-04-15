@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"启用"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+local pid = getProcessIDFromProcessName(PROCESS_NAME)
+if not pid then
+    showMessage("先启动游戏，然后重新开启此选项")
+    return
+end
+if getOpenedProcessID() ~= pid then
+    openProcess(pid)
+end
+
+if LaunchMonoDataCollector() == 0 then
+    showMessage("激活 Mono 功能失败！")
+    return
+end
+
+{$ASM}
+
+[DISABLE]
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"玩家数据"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local classID = mono_findClass(NAMESPACE_UNI, "GameManager")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+local offsets = mono_getClassFieldOffsets(classID)
+if not offsets then return end
+
+PlayerEntityOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_UNI, "PlayerEntity"))
+PlayerDataFormatOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_MAIN, "ArchiveDataFormat"))
+
+registerSymbol("pGameManager", instance)
+registerSymbol("pPlayerEntity", instance + offsets.PlayerEntity)
+registerSymbol("pPlayerDataFormat", instance + offsets._data)
+registerSymbol("pPlayerStamina", instance + offsets._staminaValue)
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+PlayerEntityOffs = nil
+PlayerDataFormatOffs = nil
+
+unregisterSymbol("pGameManager")
+unregisterSymbol("pPlayerEntity")
+unregisterSymbol("pPlayerDataFormat")
+unregisterSymbol("pPlayerStamina")
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"当前时间"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>8 Bytes</VariableType>
+              <Address>pPlayerDataFormat</Address>
+              <Offsets>
+                <Offset>PlayerDataFormatOffs.Time</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>3</ID>
+              <Description>"金币"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerDataFormat</Address>
+              <Offsets>
+                <Offset>PlayerDataFormatOffs.Gold</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"当前体力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerStamina</Address>
+              <Offsets>
+                <Offset>18</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"移动速度（速度较高时可以穿越障碍）"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>9</ID>
+                  <Description>"移动速度"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerEntity</Address>
+                  <Offsets>
+                    <Offset>PlayerEntityOffs.MoveSpeed</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>10</ID>
+                  <Description>"跑步加速倍率"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerEntity</Address>
+                  <Offsets>
+                    <Offset>PlayerEntityOffs.AccelerateMultiple</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11</ID>
+                  <Description>"骑行加速倍率"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerEntity</Address>
+                  <Offsets>
+                    <Offset>PlayerEntityOffs.RidingAccelerateMultiple</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>39</ID>
+              <Description>"战斗属性"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+local pAttributeEntity = getAddress("[pPlayerEntity]+PlayerEntityOffs.Attribute")
+pAttributeEntity = readPointer(pAttributeEntity)
+
+local offsets = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_MAIN, "AttributeEntity"))
+if not offsets then return end
+
+PlayerAttributePtrs = {}
+for name, offset in pairs(offsets) do
+    PlayerAttributePtrs[name] = pAttributeEntity + offset
+end
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+PlayerAttributePtrs = nil
+
+{$ASM}
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>50</ID>
+                  <Description>"基础属性"</Description>
+                  <Options moHideChildren="1"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>40</ID>
+                      <Description>"InitialHealth"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs.InitialHealth</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>41</ID>
+                      <Description>"InitialHealthRegenerationRate"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs.InitialHealthRegenerationRate</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>42</ID>
+                      <Description>"InitialAttackPower"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs.InitialAttackPower</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>43</ID>
+                      <Description>"InitialCriticalHitRate"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs.InitialCriticalHitRate</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>44</ID>
+                      <Description>"InitialCriticalHitMultiple"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs.InitialCriticalHitMultiple</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>45</ID>
+                      <Description>"InitialDefense"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs.InitialDefense</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>46</ID>
+                      <Description>"InitialAttackInterval"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs.InitialAttackInterval</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>47</ID>
+                      <Description>"InitialAttackRange"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs.InitialAttackRange</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>48</ID>
+                      <Description>"InitialBulletCount"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs.InitialBulletCount</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>49</ID>
+                      <Description>"InitialHitCooldown"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs.InitialHitCooldown</Address>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>51</ID>
+                  <Description>"当前属性"</Description>
+                  <Options moHideChildren="1"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>52</ID>
+                      <Description>"Health"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs._healthValue</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>53</ID>
+                      <Description>"HealthRegenerationRate"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs._healthRegenerationRate</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>54</ID>
+                      <Description>"AttackPower"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs._attackPower</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>55</ID>
+                      <Description>"CriticalHitRate"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs._criticalHitRate</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>56</ID>
+                      <Description>"CriticalHitDamage"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs._criticalHitDamage</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>57</ID>
+                      <Description>"Defense"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs._defense </Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>58</ID>
+                      <Description>"AttackInterval"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs._attackInterval</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>59</ID>
+                      <Description>"AttackRange"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>PlayerAttributePtrs._attackRange</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>60</ID>
+                      <Description>"BulletCount"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>PlayerAttributePtrs._bulletCount</Address>
+                      <Offsets>
+                        <Offset>18</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26</ID>
+          <Description>"物品栏"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local classID = mono_findClass(NAMESPACE_UNI, "GameWindow")
+local instances = mono_getClassInstances(classID)
+if not instances then return end
+
+local pGameWindow = 0
+for i = 1, #instances do
+    local _mediator = readPointer(instances[i] + 0x18)
+    if _mediator ~= 0 then
+        pGameWindow = instances[i]
+        break
+    end
+end
+
+if pGameWindow == 0 then return end
+
+local pInventoryGrids = readPointer(pGameWindow + 0xB8)
+pInventoryGrids = pInventoryGrids + 0x20
+
+function InventoryGridQuantity(index)
+    local pInventoryGridEntity = readPointer(pInventoryGrids + 8 * index)
+    local pInventoryItemFormat = readPointer(pInventoryGridEntity + 0x48)
+    return pInventoryItemFormat + 0x18
+end
+
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27</ID>
+              <Description>"物品栏 1"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(0)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28</ID>
+              <Description>"物品栏 2"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(1)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>29</ID>
+              <Description>"物品栏 3"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(2)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>30</ID>
+              <Description>"物品栏 4"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(3)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>31</ID>
+              <Description>"物品栏 5"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(4)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>32</ID>
+              <Description>"物品栏 6"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(5)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>33</ID>
+              <Description>"物品栏 7"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(6)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>36</ID>
+              <Description>"物品栏 8"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(7)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>35</ID>
+              <Description>"物品栏 9"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(8)</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>34</ID>
+              <Description>"物品栏 0"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>InventoryGridQuantity(9)</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>19</ID>
+          <Description>"钓鱼"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>18</ID>
+              <Description>"必定获得鱼"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+alloc(newmem,2048,Ephra.Framework.UnI.FishingPopup:OnCompleteFishing+14e) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+xorps xmm0, xmm0
+
+originalcode:
+//mov r11,UnityEngine.Mathf:Abs
+//call r11
+
+exit:
+jmp returnhere
+
+Ephra.Framework.UnI.FishingPopup:OnCompleteFishing+14e:
+jmp newmem
+nop 8
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+Ephra.Framework.UnI.FishingPopup:OnCompleteFishing+14e:
+db 49 BB ? ? ? ? ? ? ? ? 41 FF D3
+//mov r11,UnityEngine.Mathf:Abs
+//call r11
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"立即钓鱼（配合使用 必定获得鱼）"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+alloc(newmem,2048,Ephra.Framework.UnI.FishingPopup:ScheduleUpdate+94) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+
+originalcode:
+cvtss2sd xmm1,xmm1
+movsd xmm0,xmm1
+comisd xmm1,xmm0
+
+exit:
+jmp returnhere
+
+Ephra.Framework.UnI.FishingPopup:ScheduleUpdate+94:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+Ephra.Framework.UnI.FishingPopup:ScheduleUpdate+94:
+db F3 0F 5A C9 66 0F 2F C8
+//cvtss2sd xmm1,xmm1
+//comisd xmm1,xmm0
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>23</ID>
+          <Description>"一击即毁（重新进入当前场景）"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+alloc(newmem,2048,Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+23) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov rax,1
+mov eax,1
+
+originalcode:
+mov rsi,[rsp]
+add rsp,08
+
+exit:
+jmp returnhere
+
+Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+23:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+23:
+db 48 8B 34 24 48 83 C4 08
+//mov rsi,[rsp]
+//add rsp,08
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>25</ID>
+          <Description>"立即成熟（重新进入当前场景）"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local classID = mono_findClass(NAMESPACE_UNI, "CropEntity")
+local instances = mono_getClassInstances(classID)
+if not instances then
+    return
+end
+
+for i = 1, #instances do
+    local pCropEntity = instances[i]
+
+    local pCropFormat = readPointer(pCropEntity + 0x40)
+    if pCropFormat == 0 then
+        goto continue
+    end
+
+    if readInteger(pCropFormat + 0x1C) == 0xFFFFFFFF then -- seedItemID
+        goto continue
+    end
+
+    local MaturityDays = readInteger(pCropFormat + 0x28)
+    if MaturityDays == 0xFFFFFFFF then
+        goto continue
+    end
+
+
+    local pEnvironmentCropFormat = readPointer(pCropEntity + 0x48)
+    if pEnvironmentCropFormat == 0 then
+        goto continue
+    end
+    writeInteger(pEnvironmentCropFormat + 0x28, MaturityDays) -- CropGrowthDay
+
+
+    local pCropGrowthData = readPointer(pCropEntity + 0x50)
+    if pCropGrowthData == 0 then
+        goto continue
+    end
+    writeInteger(pCropGrowthData + 0x1C, MaturityDays) -- GrowthDay
+
+
+    ::continue::
+end
+
+{$ASM}
+
+
+[DISABLE]
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>24</ID>
+          <Description>"立即满 Sex 条"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+alloc(newmem,2048,Ephra.Framework.UnI.SexWindow:OnRefreshClimaxValue+8d) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+//mulsd xmm1,xmm2
+divsd xmm2,xmm1
+addsd xmm0,xmm2
+
+exit:
+jmp returnhere
+
+Ephra.Framework.UnI.SexWindow:OnRefreshClimaxValue+8d:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+Ephra.Framework.UnI.SexWindow:OnRefreshClimaxValue+8d:
+db F2 0F 59 CA F2 0F 58 C1
+//mulsd xmm1,xmm2
+//addsd xmm0,xmm1
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>替换了 jne Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+1b</Description>
+      <AddressString>1CE45BB33F2</AddressString>
+      <Before>
+        <Byte>46</Byte>
+        <Byte>50</Byte>
+        <Byte>48</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>75</Byte>
+        <Byte>07</Byte>
+      </Actual>
+      <After>
+        <Byte>B8</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <LuaScript>PROCESS_NAME = "UninhabitedIsland.exe"
+NAMESPACE_UNI = "Ephra.Framework.UnI"
+NAMESPACE_MAIN = "Ephra.Framework"
+
+function mono_getClassInstance(classID)
+    local instance = mono_class_findInstancesOfClassListOnly(mono_class_getNamespace(classID), classID)
+    if not instance or #instance == 0 then
+        return nil
+    end
+    return instance[1]
+end
+
+function mono_getClassInstances(classID)
+    local instance = mono_class_findInstancesOfClassListOnly(mono_class_getNamespace(classID), classID)
+    if not instance or #instance == 0 then
+        return nil
+    end
+    return instance
+end
+
+function mono_getClassFieldOffsets(classID)
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        t[fields[i].name] = fields[i].offset
+    end
+    return t
+end
+
+</LuaScript>
+</CheatTable>

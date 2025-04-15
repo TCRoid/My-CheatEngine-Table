@@ -1,0 +1,1273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <Forms>
+    <ItemEditor Class="TCEForm" Encoding="Ascii85">by7]k)=ArSj!7n?fT9QxqEuqZ%8CRBXk!wks!@?P0/l7a^pySu(x;XzRqGS/1U(,4c5Ju}oP*9BI(lQcc_YI#erD/s5:YY!i-XA(b;2U-kWW%!Q9lUb)s}8$(Ol@K;.0l$j4SUu;3kBYU3xe4?o8ek6$GfPM#:hPtLAX2!7N$8S5}0v9,r5oH-N8#rI6]D6hdWw2_h1z7b}8*0v*v4=$Q^o#k@?B=Y2LHwj$xO:@pQPCrWai!3=!195+i6i$t3l:9q!PwW))3U[:2(_Jb[,_NqvorG)$$,Op#$k*?}?D[QXploJu-Mn;ySZJ3Ebhe828coawh$}HzHZr,X0?7;i+#Uh6(I-{RU2#qN1WlvVPNHl.7,(Jid7:)[!DV:9.^dfMzACZSH,VR=vP(*xt.nG2!Eqzl*O9yqbpK0e+x]V94rK;k#c7Nag^B!r=nd5J*:0aKHe-P;)/LO=#0.6d!:3g(#3Yrpjp]5bh8,+C@W=#0XsvaTz+l9v3$9UZ/:R#p?o3EEvf051[!b2B!QLl0BM=3?XgbvFn[p0ag]Chd*ld4+EkIRk!=O4v,v7FGYumeKKUj</ItemEditor>
+  </Forms>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"启用"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+PROCESS_NAME = "The Detective Servant.exe"
+
+local pid = getProcessIDFromProcessName(PROCESS_NAME)
+if not pid then
+    showMessage("先启动游戏，然后重新开启此选项")
+    return
+end
+if getOpenedProcessID() ~= pid then
+    openProcess(pid)
+end
+
+if LaunchMonoDataCollector() == 0 then
+    showMessage("激活 Mono 功能失败！")
+    return
+end
+
+{$ASM}
+
+[DISABLE]
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>27</ID>
+          <Description>"玩家数据"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local classID = mono_findClass("", "GData")
+local fields = mono_class_enumFields(classID)
+
+local offset_Playerdata = nil
+for i = 1, #fields do
+    if fields[i].name == "Playerdata" then
+        offset_Playerdata = fields[i].offset
+    end
+end
+
+local domain = mono_enumDomains()[1]
+local addr_GData = mono_class_getStaticFieldAddress(domain, classID)
+local ptr_PlayerData = addr_GData + offset_Playerdata
+
+registerSymbol("pPlayerData", ptr_PlayerData)
+
+{$ASM}
+
+[DISABLE]
+{$LUA}
+unregisterSymbol("pPlayerData")
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>59</ID>
+              <Description>"背包物品"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+local pItemBag = getAddressSafe("[[pPlayerData]+8]+C")
+if not pItemBag then return end
+
+registerSymbol("pItemBag", pItemBag)
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+unregisterSymbol("pItemBag")
+
+{$ASM}
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>28</ID>
+                  <Description>"编辑背包物品"</Description>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+ItemEditor.show()
+ItemEditor.bringToFront()
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+ItemEditor.hide()
+
+{$ASM}
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>39</ID>
+                  <Description>"绝顶"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pItemBag</Address>
+                  <Offsets>
+                    <Offset>7*10+C</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>45</ID>
+                  <Description>"黛奴体力"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pItemBag</Address>
+                  <Offsets>
+                    <Offset>8*10+C</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>34</ID>
+                  <Description>"我的体力"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pItemBag</Address>
+                  <Offsets>
+                    <Offset>9*10+C</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>61</ID>
+              <Description>"解锁"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+local pFlagData = getAddressSafe("[[pPlayerData]+18]")
+if not pFlagData then return end
+
+function unlockFlagData(offset)
+    local addr = readPointer(pFlagData + offset)
+    local count = readInteger(addr + 0xC)
+    local t = {}
+    for i = 1, count do
+        t[i] = 0xFF
+    end
+    writeBytes(addr + 0x10, t)
+end
+
+{$ASM}
+
+
+[DISABLE]
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>68</ID>
+                  <Description>"解锁 AVG"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x8)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>69</ID>
+                  <Description>"解锁 CG"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0xC)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>70</ID>
+                  <Description>"解锁 TeacherDo"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x10)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>79</ID>
+                  <Description>"解锁 HModeTeacher"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x14)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>71</ID>
+                  <Description>"解锁 CityExploreComplete"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x18)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>72</ID>
+                  <Description>"解锁 服装"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x1C)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>73</ID>
+                  <Description>"解锁 成就"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x20)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>74</ID>
+                  <Description>"解锁 兵种"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x24)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>75</ID>
+                  <Description>"解锁 FirstItemGet"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x28)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>76</ID>
+                  <Description>"解锁 FirstShopItemUnlock"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x2C)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>77</ID>
+                  <Description>"解锁 FirstServeUnlock"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x30)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>78</ID>
+                  <Description>"解锁 HModePostureSeen"</Description>
+                  <Options moHideChildren="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+unlockFlagData(0x34)
+{$ASM}
+
+
+[DISABLE]
+
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"期限"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>54</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"天数"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"行动值"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>5C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"心情"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>60</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"金钱"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>64</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"当前兵力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>68</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>9</ID>
+              <Description>"最大兵力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>6C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>10</ID>
+              <Description>"攻击力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>70</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11</ID>
+              <Description>"防御力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>74</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"选择兵种"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>78</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>13</ID>
+              <Description>"Endurance"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>7C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>14</ID>
+              <Description>"好感度"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>80</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>15</ID>
+              <Description>"PleasingValue"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>84</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>16</ID>
+              <Description>"PleasingValue_DailyMax"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>88</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>17</ID>
+              <Description>"ExerciseValue"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>8C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>18</ID>
+              <Description>"hasBadEnd"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>90</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>19</ID>
+              <Description>"isHModeTutorialMode"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>91</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>20</ID>
+              <Description>"isHModeEndure"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>92</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>21</ID>
+              <Description>"isHModeConstraint"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pPlayerData</Address>
+              <Offsets>
+                <Offset>93</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Structures StructVersion="2">
+    <Structure Name="PlayerData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="nowItemBag" DisplayMethod="unsigned integer">
+          <Structure Name="Dictionary`2" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="buckets" DisplayMethod="unsigned integer"/>
+              <Element Offset="12" Vartype="Pointer" Bytesize="4" OffsetHex="0000000C" Description="entries" DisplayMethod="unsigned integer">
+                <Structure Name="Entry[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Pointer" Bytesize="4" OffsetHex="00000010" Description="[0]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="32" Vartype="Pointer" Bytesize="4" OffsetHex="00000020" Description="[1]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="48" Vartype="Pointer" Bytesize="4" OffsetHex="00000030" Description="[2]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="64" Vartype="Pointer" Bytesize="4" OffsetHex="00000040" Description="[3]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="80" Vartype="Pointer" Bytesize="4" OffsetHex="00000050" Description="[4]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="96" Vartype="Pointer" Bytesize="4" OffsetHex="00000060" Description="[5]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="112" Vartype="Pointer" Bytesize="4" OffsetHex="00000070" Description="[6]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="128" Vartype="Pointer" Bytesize="4" OffsetHex="00000080" Description="[7]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="144" Vartype="Pointer" Bytesize="4" OffsetHex="00000090" Description="[8]Entry" DisplayMethod="unsigned integer"/>
+                    <Element Offset="160" Vartype="Pointer" Bytesize="4" OffsetHex="000000A0" Description="[9]Entry" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="16" Vartype="Pointer" Bytesize="4" OffsetHex="00000010" Description="comparer" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="keys" DisplayMethod="unsigned integer"/>
+              <Element Offset="24" Vartype="Pointer" Bytesize="4" OffsetHex="00000018" Description="values" DisplayMethod="unsigned integer"/>
+              <Element Offset="28" Vartype="Pointer" Bytesize="4" OffsetHex="0000001C" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+              <Element Offset="32" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000020" Description="count" DisplayMethod="unsigned integer"/>
+              <Element Offset="36" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000024" Description="version" DisplayMethod="unsigned integer"/>
+              <Element Offset="40" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000028" Description="freeList" DisplayMethod="unsigned integer"/>
+              <Element Offset="44" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000002C" Description="freeCount" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="12" Vartype="Pointer" Bytesize="4" OffsetHex="0000000C" Description="nowWearClothes" DisplayMethod="unsigned integer"/>
+        <Element Offset="16" Vartype="Pointer" Bytesize="4" OffsetHex="00000010" Description="snowItemBag" DisplayMethod="unsigned integer"/>
+        <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="nowMapData" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer">
+                <Structure Name="MapPointSaveData[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Pointer" Bytesize="4" OffsetHex="00000010" Description="[0]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="[1]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="24" Vartype="Pointer" Bytesize="4" OffsetHex="00000018" Description="[2]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="28" Vartype="Pointer" Bytesize="4" OffsetHex="0000001C" Description="[3]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="32" Vartype="Pointer" Bytesize="4" OffsetHex="00000020" Description="[4]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="36" Vartype="Pointer" Bytesize="4" OffsetHex="00000024" Description="[5]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="40" Vartype="Pointer" Bytesize="4" OffsetHex="00000028" Description="[6]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="44" Vartype="Pointer" Bytesize="4" OffsetHex="0000002C" Description="[7]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="48" Vartype="Pointer" Bytesize="4" OffsetHex="00000030" Description="[8]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                    <Element Offset="52" Vartype="Pointer" Bytesize="4" OffsetHex="00000034" Description="[9]MapPointSaveData" DisplayMethod="unsigned integer">
+                      <Structure Name="MapPointSaveData" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                        <Elements>
+                          <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="ID" DisplayMethod="unsigned integer"/>
+                          <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="nowState" DisplayMethod="unsigned integer"/>
+                          <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="nowHp" DisplayMethod="unsigned integer"/>
+                          <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="nowExploreProgress" DisplayMethod="unsigned integer"/>
+                          <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="pointFlag" DisplayMethod="unsigned integer"/>
+                        </Elements>
+                      </Structure>
+                    </Element>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="24" Vartype="Pointer" Bytesize="4" OffsetHex="00000018" Description="flagData" DisplayMethod="unsigned integer">
+          <Structure Name="FlagDataSave" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="Flag_Memory_AVG" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="Pointer" Bytesize="4" OffsetHex="0000000C" Description="Flag_Memory_CG" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="26" Vartype="Byte" Bytesize="1" RLECount="2" OffsetHex="0000001A" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="16" Vartype="Pointer" Bytesize="4" OffsetHex="00000010" Description="Flag_TeacherDo" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="Flag_HModeTeacher" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="24" Vartype="Pointer" Bytesize="4" OffsetHex="00000018" Description="Flag_City_Explore_Complete" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="28" Vartype="Pointer" Bytesize="4" OffsetHex="0000001C" Description="Flag_Clothing_Unlock" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="26" Vartype="Byte" Bytesize="1" RLECount="3" OffsetHex="0000001A" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="32" Vartype="Pointer" Bytesize="4" OffsetHex="00000020" Description="Flag_Achievement" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="36" Vartype="Pointer" Bytesize="4" OffsetHex="00000024" Description="Flag_Soldier_Unlock" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="40" Vartype="Pointer" Bytesize="4" OffsetHex="00000028" Description="Flag_FirstItemGet" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="44" Vartype="Pointer" Bytesize="4" OffsetHex="0000002C" Description="Flag_FirstShopItemUnlock" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="48" Vartype="Pointer" Bytesize="4" OffsetHex="00000030" Description="Flag_FirstServeUnlock" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="52" Vartype="Pointer" Bytesize="4" OffsetHex="00000034" Description="Flag_HModePostureSeen" DisplayMethod="unsigned integer">
+                <Structure Name="Byte[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="Byte" Bytesize="1" OffsetHex="00000010" Description="[0]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="17" Vartype="Byte" Bytesize="1" OffsetHex="00000011" Description="[1]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="18" Vartype="Byte" Bytesize="1" OffsetHex="00000012" Description="[2]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="[3]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="[4]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="[5]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="[6]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="[7]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="24" Vartype="Byte" Bytesize="1" OffsetHex="00000018" Description="[8]Byte" DisplayMethod="unsigned integer"/>
+                    <Element Offset="25" Vartype="Byte" Bytesize="1" OffsetHex="00000019" Description="[9]Byte" DisplayMethod="unsigned integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="28" Vartype="Pointer" Bytesize="4" OffsetHex="0000001C" Description="AvgPlayAt_Rest" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer">
+                <Structure Name="Int32[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="[0]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="[1]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="24" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000018" Description="[2]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="28" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000001C" Description="[3]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="32" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000020" Description="[4]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="36" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000024" Description="[5]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="40" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000028" Description="[6]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="44" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000002C" Description="[7]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="48" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000030" Description="[8]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="52" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000034" Description="[9]Int32" DisplayMethod="signed integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="32" Vartype="Pointer" Bytesize="4" OffsetHex="00000020" Description="AvgPlayAt_Start" DisplayMethod="unsigned integer"/>
+        <Element Offset="36" Vartype="Pointer" Bytesize="4" OffsetHex="00000024" Description="Display_MapFlag_For_AvgID" DisplayMethod="unsigned integer"/>
+        <Element Offset="40" Vartype="Pointer" Bytesize="4" OffsetHex="00000028" Description="NewTag_Achievement" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer">
+                <Structure Name="Int32[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="[0]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="[1]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="24" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000018" Description="[2]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="28" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000001C" Description="[3]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="32" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000020" Description="[4]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="36" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000024" Description="[5]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="40" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000028" Description="[6]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="44" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000002C" Description="[7]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="48" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000030" Description="[8]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="52" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000034" Description="[9]Int32" DisplayMethod="signed integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="44" Vartype="Pointer" Bytesize="4" OffsetHex="0000002C" Description="NewTag_Item" DisplayMethod="unsigned integer"/>
+        <Element Offset="48" Vartype="Pointer" Bytesize="4" OffsetHex="00000030" Description="NewTag_CG" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer">
+                <Structure Name="Int32[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="[0]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="[1]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="24" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000018" Description="[2]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="28" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000001C" Description="[3]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="32" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000020" Description="[4]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="36" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000024" Description="[5]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="40" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000028" Description="[6]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="44" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000002C" Description="[7]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="48" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000030" Description="[8]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="52" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000034" Description="[9]Int32" DisplayMethod="signed integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="52" Vartype="Pointer" Bytesize="4" OffsetHex="00000034" Description="NewTag_Memory" DisplayMethod="unsigned integer"/>
+        <Element Offset="56" Vartype="Pointer" Bytesize="4" OffsetHex="00000038" Description="NewTag_ShopItem" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer">
+                <Structure Name="Int32[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="[0]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="[1]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="24" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000018" Description="[2]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="28" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000001C" Description="[3]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="32" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000020" Description="[4]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="36" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000024" Description="[5]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="40" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000028" Description="[6]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="44" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000002C" Description="[7]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="48" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000030" Description="[8]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="52" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000034" Description="[9]Int32" DisplayMethod="signed integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="60" Vartype="Pointer" Bytesize="4" OffsetHex="0000003C" Description="NewTag_Dress" DisplayMethod="unsigned integer"/>
+        <Element Offset="64" Vartype="Pointer" Bytesize="4" OffsetHex="00000040" Description="NewOpen_MapPoint" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer">
+                <Structure Name="Int32[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="[0]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="[1]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="24" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000018" Description="[2]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="28" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000001C" Description="[3]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="32" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000020" Description="[4]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="36" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000024" Description="[5]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="40" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000028" Description="[6]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="44" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000002C" Description="[7]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="48" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000030" Description="[8]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="52" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000034" Description="[9]Int32" DisplayMethod="signed integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="68" Vartype="Pointer" Bytesize="4" OffsetHex="00000044" Description="NewTag_Serve" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer"/>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="72" Vartype="Pointer" Bytesize="4" OffsetHex="00000048" Description="NewTag_HModePosture" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer"/>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="76" Vartype="Pointer" Bytesize="4" OffsetHex="0000004C" Description="MapPointOpenDone" DisplayMethod="unsigned integer">
+          <Structure Name="List`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" OffsetHex="00000008" Description="_items" DisplayMethod="unsigned integer">
+                <Structure Name="Int32[]" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+                  <Elements>
+                    <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Count" DisplayMethod="unsigned integer"/>
+                    <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="[0]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="[1]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="24" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000018" Description="[2]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="28" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000001C" Description="[3]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="32" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000020" Description="[4]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="36" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000024" Description="[5]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="40" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000028" Description="[6]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="44" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000002C" Description="[7]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="48" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000030" Description="[8]Int32" DisplayMethod="signed integer"/>
+                    <Element Offset="52" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000034" Description="[9]Int32" DisplayMethod="signed integer"/>
+                  </Elements>
+                </Structure>
+              </Element>
+              <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="_size" DisplayMethod="unsigned integer"/>
+              <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="_version" DisplayMethod="unsigned integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" OffsetHex="00000014" Description="_syncRoot" DisplayMethod="unsigned integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="80" Vartype="Pointer" Bytesize="4" OffsetHex="00000050" Description="BuffContainer" DisplayMethod="unsigned integer"/>
+        <Element Offset="84" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000054" Description="nowDeadLineStage" DisplayMethod="unsigned integer"/>
+        <Element Offset="88" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000058" Description="nowDayRound" DisplayMethod="unsigned integer"/>
+        <Element Offset="92" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000005C" Description="nowActionValue" DisplayMethod="unsigned integer"/>
+        <Element Offset="96" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000060" Description="nowMoodValue" DisplayMethod="unsigned integer"/>
+        <Element Offset="100" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000064" Description="nowTotalMoney" DisplayMethod="unsigned integer"/>
+        <Element Offset="104" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000068" Description="nowMonsterHp" DisplayMethod="unsigned integer"/>
+        <Element Offset="108" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000006C" Description="maxMonsterHp" DisplayMethod="unsigned integer"/>
+        <Element Offset="112" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000070" Description="nowBaseAttack" DisplayMethod="unsigned integer"/>
+        <Element Offset="116" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000074" Description="nowBaseDef" DisplayMethod="unsigned integer"/>
+        <Element Offset="120" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000078" Description="nowSelectSoldier" DisplayMethod="unsigned integer"/>
+        <Element Offset="124" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000007C" Description="nowEndurance" DisplayMethod="unsigned integer"/>
+        <Element Offset="128" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000080" Description="nowFriendlyValue" DisplayMethod="unsigned integer"/>
+        <Element Offset="132" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000084" Description="nowPleasingValue" DisplayMethod="unsigned integer"/>
+        <Element Offset="136" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000088" Description="nowPleasingValue_DailyMax" DisplayMethod="unsigned integer"/>
+        <Element Offset="140" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000008C" Description="nowExerciseValue" DisplayMethod="unsigned integer"/>
+        <Element Offset="144" Vartype="Byte" Bytesize="1" OffsetHex="00000090" Description="hasBadEnd" DisplayMethod="unsigned integer"/>
+        <Element Offset="145" Vartype="Byte" Bytesize="1" OffsetHex="00000091" Description="isHModeTutorialMode" DisplayMethod="unsigned integer"/>
+        <Element Offset="146" Vartype="Byte" Bytesize="1" OffsetHex="00000092" Description="isHModeEndure" DisplayMethod="unsigned integer"/>
+        <Element Offset="147" Vartype="Byte" Bytesize="1" OffsetHex="00000093" Description="isHModeConstraint" DisplayMethod="unsigned integer"/>
+      </Elements>
+    </Structure>
+  </Structures>
+  <LuaScript>local ItemFields = {}
+
+
+local function createItemRow(parent, index, item)
+    -- Create panel for each row to hold components
+    local rowPanel = createPanel(parent)
+    rowPanel.Left = 5
+    rowPanel.Top = (index - 1) * 30 + 10 -- start from 0
+    rowPanel.Width = parent.Width - 10
+    rowPanel.Height = 25
+    rowPanel.BorderSpacing.Around = 2
+    rowPanel.BevelOuter = bvNone
+
+    -- First label
+    local label1 = createLabel(rowPanel)
+    label1.Left = 0
+    label1.Top = 5
+    label1.Caption = item.address
+
+    -- Second label
+    local label2 = createLabel(rowPanel)
+    label2.Left = 160
+    label2.Top = 5
+    label2.Caption = item.name
+
+    -- Input field (Edit box)
+    local edit = createEdit(rowPanel)
+    edit.Left = 400
+    edit.Top = 2
+    edit.Width = 160
+    edit.Text = item.value
+    edit.OnKeyUp = function(sender, key)
+        if key ~= VK_RETURN then return end
+        -- showMessage(string.format("%s: %s", label1.Caption, edit.Text))
+
+        local value = tonumber(edit.Text)
+        if not value then return end
+        writeInteger(label1.Caption, value)
+    end
+
+    -- Add controls to table
+    ItemFields[index] = {
+        addressLabel = label1,
+        nameLabel = label2,
+        valueInput = edit
+    }
+
+
+    -- Create the popup menu
+    local popupMenu = createPopupMenu(rowPanel)
+
+    -- Add menu items
+    local menuItem1 = createMenuItem(popupMenu)
+    menuItem1.Caption = '复制地址'
+    menuItem1.OnClick = function()
+        writeToClipboard(label1.Caption)
+    end
+    popupMenu.Items.add(menuItem1)
+
+    -- Binding the popup menu
+    label1.PopupMenu = popupMenu
+end
+
+local ITEM_DATA = {
+    [1000] = "Attr_Stength",
+    [1001] = "Attr_HActionPoint",
+    [1002] = "Attr_HEnergy",
+    [1003] = "Attr_Mouth",
+    [1004] = "Attr_Breast",
+    [1005] = "Attr_Clitoris",
+    [1006] = "Attr_Vagina",
+    [1007] = "Attr_Anal",
+    [1008] = "Attr_LubRucatuiBg",
+    [1009] = "Attr_Dislike",
+    [1010] = "Attr_Cum",
+    [1011] = "Attr_GirlHStrength",
+    [27] = "HOil",
+    [28] = "HPotion",
+    [29] = "HPotion_Ex",
+    [30] = "M_Oil",
+    [31] = "B_Oil",
+    [32] = "C_Oil",
+    [33] = "V_Oil",
+    [34] = "Smooth_Oil",
+    [1020] = "Attr_M_Climax_Count",
+    [1021] = "Attr_B_Climax_Count",
+    [1022] = "Attr_C_Climax_Count",
+    [1023] = "Attr_V_Climax_Count",
+    [1024] = "Attr_A_Climax_Count",
+    [1025] = "Attr_Kiss_Time_Count",
+    [1026] = "Attr_V_Creampie_Count",
+    [1027] = "Attr_A_Creampie_Count",
+    [1028] = "Attr_Injection_Count",
+    [1029] = "Attr_Climax_1X_Count",
+    [1030] = "Attr_Climax_2X_Count",
+    [1031] = "Attr_Climax_4X_Count",
+    [1032] = "Attr_Climax_8X_Count",
+    [1033] = "Attr_SexAction_Count",
+    [1034] = "Attr_Sex_Count",
+}
+
+function ItemEditor_BtnRefreshClick(sender)
+    local pItemBag = getAddressSafe("[pItemBag]")
+    if not pItemBag then
+        showMessage("未获取到背包物品指针")
+        return
+    end
+
+    local maxCount = 60
+    local needCreate = (#ItemFields == 0)
+
+    for index = 1, maxCount - 1 do
+        local pItem = pItemBag + index * 0x10
+
+        local itemId = readInteger(pItem)
+
+        local itemData = {
+            address = string.format("%X", pItem + 0xC),
+            name = ITEM_DATA[itemId] or itemId,
+            value = readInteger(pItem + 0xC)
+        }
+
+        if needCreate then
+            createItemRow(ItemEditor.ItemList, index, itemData)
+        else
+            ItemFields[index].addressLabel.Caption = itemData.address
+            ItemFields[index].nameLabel.Caption = itemData.name
+            ItemFields[index].valueInput.Text = itemData.value
+        end
+    end
+end
+
+</LuaScript>
+</CheatTable>
