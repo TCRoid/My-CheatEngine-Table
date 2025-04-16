@@ -13,4 +13,4 @@
 
 # 游戏截图
 
-![](https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2291680/header.jpg)
+![](https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2291680/header_tchinese.jpg)

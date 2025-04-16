@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"启用"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+local pid = getProcessIDFromProcessName(PROCESS_NAME)
+if not pid then
+    showMessage("先启动游戏，然后重新开启此选项")
+    return
+end
+if getOpenedProcessID() ~= pid then
+    openProcess(pid)
+end
+
+if LaunchMonoDataCollector() == 0 then
+    showMessage("激活 Mono 功能失败！")
+    return
+end
+
+local classID = mono_findClass(NAMESPACE_SX, "PlayerSaveDataController")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+local fields = mono_getClassFieldOffsets(classID)
+if not fields then return end
+
+pPlayerSaveData = instance + fields.m_PlayerSaveData
+
+PlayerSaveDataOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "PlayerSaveData"))
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+pPlayerSaveData = nil
+PlayerSaveDataOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"玩家数据"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+pPlayerSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_PlayerSystem
+
+PlayerSystemOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "PlayerSystem"))
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+pPlayerSystem = nil
+PlayerSystemOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"时间"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+pTimeData = readPointer(pPlayerSystem) + PlayerSystemOffs.m_TimeData
+
+TimeDataOffs = mono_getClassFieldOffsets(mono_findClass("", "SXTimeData"))
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+pTimeData = nil
+TimeDataOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>9</ID>
+                  <Description>"Year"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Year</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>10</ID>
+                  <Description>"Month"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Month</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11</ID>
+                  <Description>"Day"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Day</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>12</ID>
+                  <Description>"Hours"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Hours</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>13</ID>
+                  <Description>"Hours_24"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Hours_24</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>14</ID>
+                  <Description>"Min"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Min</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>15</ID>
+                  <Description>"Second"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Second</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>18</ID>
+                  <Description>"Time_Slot"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.Time_Slot</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>17</ID>
+                  <Description>"WeatherType"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.WeatherType</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>16</ID>
+                  <Description>"TotalDay"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.TotalDay</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>19</ID>
+                  <Description>"RainDayIndex"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pTimeData</Address>
+                  <Offsets>
+                    <Offset>TimeDataOffs.RainDayIndex</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>20</ID>
+              <Description>"当前耐力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerSystem</Address>
+              <Offsets>
+                <Offset>PlayerSystemOffs.PlayerPower</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>21</ID>
+              <Description>"最大耐力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerSystem</Address>
+              <Offsets>
+                <Offset>PlayerSystemOffs.PlayerMaxPower</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"金钱"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerSystem</Address>
+              <Offsets>
+                <Offset>PlayerSystemOffs.PlayerCoin</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>23</ID>
+              <Description>"玩家属性"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+pPlayerAttribute = readPointer(pPlayerSystem) + PlayerSystemOffs.m_PlayerAttribute
+
+PlayerAttributeOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "PlayerAttribute"))
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+pPlayerAttribute = nil
+PlayerAttributeOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>24</ID>
+                  <Description>"体质"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>2</Length>
+                  <Unicode>1</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>pPlayerAttribute</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>PlayerAttributeOffs.Play_Agi</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>25</ID>
+                  <Description>"体质_time"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>8</Length>
+                  <Unicode>1</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>pPlayerAttribute</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>PlayerAttributeOffs.Play_Agi_time</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>26</ID>
+                  <Description>"智力"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>2</Length>
+                  <Unicode>1</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>pPlayerAttribute</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>PlayerAttributeOffs.Play_Int</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>27</ID>
+                  <Description>"智力_time"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>8</Length>
+                  <Unicode>1</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>pPlayerAttribute</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>PlayerAttributeOffs.Play_Int_time</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>28</ID>
+                  <Description>"欲望"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>2</Length>
+                  <Unicode>1</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>pPlayerAttribute</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>PlayerAttributeOffs.Play_Desire</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>29</ID>
+                  <Description>"欲望_time"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>8</Length>
+                  <Unicode>1</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>pPlayerAttribute</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>PlayerAttributeOffs.Play_Desire_time</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>30</ID>
+          <Description>"职位数据"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+pWorkSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_WorkSystem
+
+WorkSystemOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "WorkSystem"))
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+pWorkSystem = nil
+WorkSystemOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>31</ID>
+              <Description>"Level"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pWorkSystem</Address>
+              <Offsets>
+                <Offset>WorkSystemOffs.workLv</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>32</ID>
+              <Description>"Exp"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pWorkSystem</Address>
+              <Offsets>
+                <Offset>WorkSystemOffs.workExp</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>33</ID>
+              <Description>"TodayWorkTime"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pWorkSystem</Address>
+              <Offsets>
+                <Offset>WorkSystemOffs.TodayWorkTime</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>34</ID>
+              <Description>"DayMaxTime"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pWorkSystem</Address>
+              <Offsets>
+                <Offset>WorkSystemOffs.DayMaxTime</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>35</ID>
+              <Description>"IsPayRaise"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pWorkSystem</Address>
+              <Offsets>
+                <Offset>WorkSystemOffs.IsPayRaise</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>36</ID>
+          <Description>"NPC数据"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local pNpcSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_NpcSystem
+
+local NpcSystemOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "NpcSystem"))
+
+local pNpcDataDict = readPointer(pNpcSystem) + NpcSystemOffs.m_NpcData
+local pEntries = readPointer(pNpcDataDict) + 0x18
+pEntries = readPointer(pEntries) + 0x20
+
+local NpcSaveDataOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "NpcSaveData"))
+
+function GetNpcData(index)
+    local pNpcData = readPointer(pEntries + (index + 1) * 0x10 + index * 0x8)
+
+    local pGoodOpinionValueDic = readPointer(pNpcData + NpcSaveDataOffs.CurrentTalkGoodOpinionValueDic)
+    local pEntries = readPointer(pGoodOpinionValueDic + 0x18)
+
+    return {
+        GoodOpinionValue = pNpcData + NpcSaveDataOffs.GoodOpinionValue,
+        TalkValue = pEntries + 0x30,
+        GiftValue = pEntries + 0x48,
+        SexValue = pEntries + 0x60
+    }
+end
+
+{$ASM}
+
+alloc(pSelectNpcIndex,1)
+registersymbol(pSelectNpcIndex)
+
+[DISABLE]
+dealloc(pSelectNpcIndex)
+unregistersymbol(pSelectNpcIndex)
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>42</ID>
+              <Description>"选择NPC"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:0
+1:1
+2:2
+3:3
+4:4
+5:5
+6:6
+7:7
+8:8
+9:9
+10:10
+11:11
+12:12
+</DropDownList>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pSelectNpcIndex</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>37</ID>
+              <Description>"NPC好感度（选择NPC后重新启用此选项）"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+local pSelectNpcIndex = getAddressSafe("pSelectNpcIndex")
+if not pSelectNpcIndex then return end
+
+local npcIndex = readByte(pSelectNpcIndex)
+SelectNpcData = GetNpcData(npcIndex)
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+SelectNpcData = nil
+{$ASM}
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>38</ID>
+                  <Description>"总计"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>SelectNpcData.GoodOpinionValue</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>39</ID>
+                  <Description>"对话"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>SelectNpcData.TalkValue</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>40</ID>
+                  <Description>"送礼物"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>SelectNpcData.GiftValue</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>41</ID>
+                  <Description>"色色"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>SelectNpcData.SexValue</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>43</ID>
+              <Description>"所有NPC满好感度"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+for i = 0, 12 do
+    local npcData = GetNpcData(i)
+    writeInteger(npcData.GoodOpinionValue, 888)
+    writeInteger(npcData.TalkValue, 100)
+    writeInteger(npcData.GiftValue, 100)
+    writeInteger(npcData.SexValue, 100)
+end
+
+{$ASM}
+
+
+[DISABLE]
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>54</ID>
+          <Description>"下矿"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local classID = mono_findClass("aqagz", "Game_Mine_BaseConfigs")
+local domain = mono_enumDomains()[1]
+local baseAddress = mono_class_getStaticFieldAddress(domain, classID)
+local fields = mono_getClassFieldOffsets(classID)
+
+registerSymbol("curMineToolAtk", baseAddress + fields.curMineToolAtk)
+registerSymbol("curMineToolAtk_gaotou", baseAddress + fields.curMineToolAtk_gaotou)
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+unregisterSymbol("curMineToolAtk")
+unregisterSymbol("curMineToolAtk_gaotou")
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>55</ID>
+              <Description>"铁锹攻击力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>curMineToolAtk</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>56</ID>
+              <Description>"铁镐攻击力"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>curMineToolAtk_gaotou</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>51</ID>
+              <Description>"工具耐久不减"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+
+"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability"+122:
+nop 3
+
+
+"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability_gaotou"+148:
+nop 3
+
+
+
+[DISABLE]
+
+"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability"+122:
+db FF 48 1C
+//dec [rax+1C]
+
+
+"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability_gaotou"+148:
+db FF 48 1C
+//dec [rax+1C]
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>48</ID>
+          <Description>"使用物品数量不减"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+alloc(newmem,2048,"SX.PlayerSaveDataController.onRemoveBag"+118)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+//sub eax,[rsi+18]
+mov [r14+18],eax
+
+exit:
+jmp returnhere
+
+"SX.PlayerSaveDataController.onRemoveBag"+118:
+jmp newmem
+nop 2
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+"SX.PlayerSaveDataController.onRemoveBag"+118:
+db 2B 46 18 41 89 46 18
+//sub eax,[rsi+18]
+//mov [r14+18],eax
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>58</ID>
+          <Description>"获取物品数量为500"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+alloc(newmem,2048,"SX.PlayerSaveDataController.onAddBag"+1FD) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+mov ecx,[r14+18]
+add ecx,1F4
+//add ecx,[rsi+18]
+
+exit:
+jmp returnhere
+
+"SX.PlayerSaveDataController.onAddBag"+1FD:
+jmp newmem
+nop 2
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+"SX.PlayerSaveDataController.onAddBag"+1FD:
+db 41 8B 4E 18 03 4E 18
+//mov ecx,[r14+18]
+//add ecx,[rsi+18]
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>替换了 dec [rax+1C]</Description>
+      <AddressString>GameAssembly.dll+198FA12</AddressString>
+      <Before>
+        <Byte>84</Byte>
+        <Byte>6D</Byte>
+        <Byte>05</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>48</Byte>
+        <Byte>1C</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>44</Byte>
+        <Byte>EB</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <LuaScript>PROCESS_NAME = "Workspace Fantasy.exe"
+NAMESPACE_SX = "SX"
+
+function mono_getClassInstance(classID)
+    local instance = mono_class_findInstancesOfClassListOnly(mono_class_getNamespace(classID), classID)
+    if not instance or #instance == 0 then
+        return nil
+    end
+    return instance[1]
+end
+
+function mono_getClassFieldOffsets(classID)
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        t[fields[i].name] = fields[i].offset
+    end
+    return t
+end
+
+</LuaScript>
+</CheatTable>
