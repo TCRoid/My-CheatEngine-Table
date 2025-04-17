@@ -711,31 +711,6 @@ db 41 8B 4E 18 03 4E 18
       </CheatEntries>
     </CheatEntry>
   </CheatEntries>
-  <CheatCodes>
-    <CodeEntry>
-      <Description>替换了 dec [rax+1C]</Description>
-      <AddressString>GameAssembly.dll+198FA12</AddressString>
-      <Before>
-        <Byte>84</Byte>
-        <Byte>6D</Byte>
-        <Byte>05</Byte>
-        <Byte>00</Byte>
-        <Byte>00</Byte>
-      </Before>
-      <Actual>
-        <Byte>FF</Byte>
-        <Byte>48</Byte>
-        <Byte>1C</Byte>
-      </Actual>
-      <After>
-        <Byte>48</Byte>
-        <Byte>8B</Byte>
-        <Byte>0D</Byte>
-        <Byte>44</Byte>
-        <Byte>EB</Byte>
-      </After>
-    </CodeEntry>
-  </CheatCodes>
   <UserdefinedSymbols/>
   <LuaScript>PROCESS_NAME = "Workspace Fantasy.exe"
 NAMESPACE_SX = "SX"

@@ -666,30 +666,6 @@ db F2 0F 59 CA F2 0F 58 C1
       </CheatEntries>
     </CheatEntry>
   </CheatEntries>
-  <CheatCodes>
-    <CodeEntry>
-      <Description>替换了 jne Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+1b</Description>
-      <AddressString>1CE45BB33F2</AddressString>
-      <Before>
-        <Byte>46</Byte>
-        <Byte>50</Byte>
-        <Byte>48</Byte>
-        <Byte>85</Byte>
-        <Byte>C0</Byte>
-      </Before>
-      <Actual>
-        <Byte>75</Byte>
-        <Byte>07</Byte>
-      </Actual>
-      <After>
-        <Byte>B8</Byte>
-        <Byte>01</Byte>
-        <Byte>00</Byte>
-        <Byte>00</Byte>
-        <Byte>00</Byte>
-      </After>
-    </CodeEntry>
-  </CheatCodes>
   <UserdefinedSymbols/>
   <LuaScript>PROCESS_NAME = "UninhabitedIsland.exe"
 NAMESPACE_UNI = "Ephra.Framework.UnI"
