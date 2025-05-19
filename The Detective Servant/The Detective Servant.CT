@@ -1,181 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CheatTable CheatEngineTableVersion="46">
-  <Forms>
-    <ItemEditor Class="TCEForm" Encoding="Ascii85">by7]k)=ArSj!7n?fTE{%M5*9MR#qf90F9d{6-KoZ3(aWy[NzT(JTID:RIN_Y6L199=7Hc7.2ew^+ZC1F:ly*_]/d4sA#rp%VsS7zMP2mIEEJPeSkw/fxUgPHyHgNZZoNC_#klZ)lFnz5,T6RQkB/^8E,If:HA;bWTQ!3V4JKy,Us!;vyI/kGS@;Tcav^@XD22-W3Vc?K(KEp!1v:PjyGvuV7K@rhxY[.$,KPnBwtKYMohZq522/3cblkXP(l7E=SYQSUm![Vbfe_Gf^$uYR^Qq0SEhYRKmzEtRiL6A$Sj(oYP*/aQD.ZmN8pBKkIur]%-lISYP[^LCfAwyCK5/tw6@jC+:!^/VA}d41mpxhFJkbCuaO0r,VGug?rgEOW[22m.e=%U-Xva%OLTv/8hf4:dw*9OEEgdw.exaRX:=:0Em#+H1,5LTU]^(26r.fj_nhRx)_52!WjDwwe4Mx+m%*g!M6f]C5TsdXQclKia(AzTl*jdM]vD1W7j]6Bj(4t3*ZN6Sw_3x{(2?hS@WwXY$AMp(l[jFiAxl^c;pY2o_GpTA,[qbg7zh:Hi2;A.</ItemEditor>
-  </Forms>
   <CheatEntries>
     <CheatEntry>
       <ID>1</ID>
-      <Description>"启用"</Description>
+      <Description>"初始化"</Description>
       <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 {$LUA}
-PROCESS_NAME = "The Detective Servant.exe"
-
-local pid = getProcessIDFromProcessName(PROCESS_NAME)
-if not pid then
-    showMessage("先启动游戏，然后重新开启此选项")
+if not OpenGameProcess("The Detective Servant.exe", true) then
     return
 end
-if getOpenedProcessID() ~= pid then
-    openProcess(pid)
-end
 
-if LaunchMonoDataCollector() == 0 then
-    showMessage("激活 Mono 功能失败！")
-    return
-end
+local classID = mono_findClass("", "GData")
+local baseAddr = mono_getClassStaticFieldAddress(classID)
+local GDataOffs = mono_getClassFieldOffsets(classID)
+
+pPlayerData = baseAddr + GDataOffs.Playerdata
+if readPointer(pPlayerData) == 0 then return end
+
+PlayerDataOffs = mono_getClassFieldOffsets("", "PlayerData")
 
 {$ASM}
 
+
+
 [DISABLE]
+{$LUA}
+pPlayerData = nil
+PlayerDataOffs = nil
+
+{$ASM}
 
 </AssemblerScript>
       <CheatEntries>
         <CheatEntry>
-          <ID>27</ID>
-          <Description>"玩家数据"</Description>
+          <ID>59</ID>
+          <Description>"编辑背包物品"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+pItemBag = readPointer(pPlayerData) + PlayerDataOffs.nowItemBag
+
+CreateListViewForm("物品编辑")
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+pItemBag = nil
+
+{$ASM}
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>61</ID>
+          <Description>"解锁"</Description>
           <Options moHideChildren="1"/>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 {$LUA}
-local classID = mono_findClass("", "GData")
-local fields = mono_class_enumFields(classID)
+local pFlagDataSave = readPointer(pPlayerData) + PlayerDataOffs.flagData
+local FlagDataSaveOffs = mono_getClassFieldOffsets("", "FlagDataSave")
 
-local offset_Playerdata = nil
-for i = 1, #fields do
-    if fields[i].name == "Playerdata" then
-        offset_Playerdata = fields[i].offset
+function unlockFlagData(fieldname)
+    local pFlagData = readPointer(pFlagDataSave) + FlagDataSaveOffs[fieldname]
+
+    local object = readPointer(pFlagData)
+    local count = readInteger(object + 0xC)
+    for i = 0, count - 1, 1 do
+        writeByte(object + 0x10 + i, 0xFF)
     end
 end
-
-local domain = mono_enumDomains()[1]
-local addr_GData = mono_class_getStaticFieldAddress(domain, classID)
-local ptr_PlayerData = addr_GData + offset_Playerdata
-
-registerSymbol("pPlayerData", ptr_PlayerData)
 
 {$ASM}
 
 [DISABLE]
-{$LUA}
-unregisterSymbol("pPlayerData")
-
-{$ASM}
 
 </AssemblerScript>
           <CheatEntries>
             <CheatEntry>
-              <ID>59</ID>
-              <Description>"背包物品"</Description>
+              <ID>68</ID>
+              <Description>"解锁 AVG"</Description>
               <Options moHideChildren="1"/>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 {$LUA}
-local pItemBag = getAddressSafe("[[pPlayerData]+8]+C")
-if not pItemBag then return end
-
-registerSymbol("pItemBag", pItemBag)
-
+unlockFlagData("Flag_Memory_AVG")
 {$ASM}
 
 
 [DISABLE]
-{$LUA}
-unregisterSymbol("pItemBag")
-
-{$ASM}
-
-</AssemblerScript>
-              <CheatEntries>
-                <CheatEntry>
-                  <ID>28</ID>
-                  <Description>"编辑背包物品"</Description>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
-{$LUA}
-ItemEditor.show()
-ItemEditor.bringToFront()
-{$ASM}
-
-
-[DISABLE]
-{$LUA}
-ItemEditor.hide()
-
-{$ASM}
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>39</ID>
-                  <Description>"绝顶"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>4 Bytes</VariableType>
-                  <Address>pItemBag</Address>
-                  <Offsets>
-                    <Offset>7*10+C</Offset>
-                  </Offsets>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>45</ID>
-                  <Description>"黛奴体力"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>4 Bytes</VariableType>
-                  <Address>pItemBag</Address>
-                  <Offsets>
-                    <Offset>8*10+C</Offset>
-                  </Offsets>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>34</ID>
-                  <Description>"我的体力"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>4 Bytes</VariableType>
-                  <Address>pItemBag</Address>
-                  <Offsets>
-                    <Offset>9*10+C</Offset>
-                  </Offsets>
-                </CheatEntry>
-              </CheatEntries>
             </CheatEntry>
             <CheatEntry>
-              <ID>61</ID>
-              <Description>"解锁"</Description>
+              <ID>69</ID>
+              <Description>"解锁 CG"</Description>
               <Options moHideChildren="1"/>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 {$LUA}
-local pFlagData = getAddressSafe("[[pPlayerData]+18]")
-if not pFlagData then return end
-
-function unlockFlagData(offset)
-    local addr = readPointer(pFlagData + offset)
-    local count = readInteger(addr + 0xC)
-    local t = {}
-    for i = 1, count do
-        t[i] = 0xFF
-    end
-    writeBytes(addr + 0x10, t)
-end
-
+unlockFlagData("Flag_Memory_CG")
 {$ASM}
 
 
 [DISABLE]
 
+
 </AssemblerScript>
-              <CheatEntries>
-                <CheatEntry>
-                  <ID>68</ID>
-                  <Description>"解锁 AVG"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>70</ID>
+              <Description>"解锁 TeacherDo"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x8)
+unlockFlagData("Flag_TeacherDo")
 {$ASM}
 
 
@@ -183,15 +128,15 @@ unlockFlagData(0x8)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>69</ID>
-                  <Description>"解锁 CG"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>79</ID>
+              <Description>"解锁 HModeTeacher"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0xC)
+unlockFlagData("Flag_HModeTeacher")
 {$ASM}
 
 
@@ -199,15 +144,15 @@ unlockFlagData(0xC)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>70</ID>
-                  <Description>"解锁 TeacherDo"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>71</ID>
+              <Description>"解锁 CityExploreComplete"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x10)
+unlockFlagData("Flag_City_Explore_Complete")
 {$ASM}
 
 
@@ -215,15 +160,15 @@ unlockFlagData(0x10)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>79</ID>
-                  <Description>"解锁 HModeTeacher"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>72</ID>
+              <Description>"解锁 服装"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x14)
+unlockFlagData("Flag_Clothing_Unlock")
 {$ASM}
 
 
@@ -231,15 +176,15 @@ unlockFlagData(0x14)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>71</ID>
-                  <Description>"解锁 CityExploreComplete"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>73</ID>
+              <Description>"解锁 成就"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x18)
+unlockFlagData("Flag_Achievement")
 {$ASM}
 
 
@@ -247,15 +192,15 @@ unlockFlagData(0x18)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>72</ID>
-                  <Description>"解锁 服装"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>74</ID>
+              <Description>"解锁 兵种"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x1C)
+unlockFlagData("Flag_Soldier_Unlock")
 {$ASM}
 
 
@@ -263,15 +208,15 @@ unlockFlagData(0x1C)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>73</ID>
-                  <Description>"解锁 成就"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>75</ID>
+              <Description>"解锁 FirstItemGet"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x20)
+unlockFlagData("Flag_FirstItemGet")
 {$ASM}
 
 
@@ -279,15 +224,15 @@ unlockFlagData(0x20)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>74</ID>
-                  <Description>"解锁 兵种"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>76</ID>
+              <Description>"解锁 FirstShopItemUnlock"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x24)
+unlockFlagData("Flag_FirstShopItemUnlock")
 {$ASM}
 
 
@@ -295,15 +240,15 @@ unlockFlagData(0x24)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>75</ID>
-                  <Description>"解锁 FirstItemGet"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>77</ID>
+              <Description>"解锁 FirstServeUnlock"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x28)
+unlockFlagData("Flag_FirstServeUnlock")
 {$ASM}
 
 
@@ -311,15 +256,15 @@ unlockFlagData(0x28)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>76</ID>
-                  <Description>"解锁 FirstShopItemUnlock"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
+            </CheatEntry>
+            <CheatEntry>
+              <ID>78</ID>
+              <Description>"解锁 HModePostureSeen"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
-unlockFlagData(0x2C)
+unlockFlagData("Flag_HModePostureSeen")
 {$ASM}
 
 
@@ -327,301 +272,285 @@ unlockFlagData(0x2C)
 
 
 </AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>77</ID>
-                  <Description>"解锁 FirstServeUnlock"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
-{$LUA}
-unlockFlagData(0x30)
-{$ASM}
-
-
-[DISABLE]
-
-
-</AssemblerScript>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>78</ID>
-                  <Description>"解锁 HModePostureSeen"</Description>
-                  <Options moHideChildren="1"/>
-                  <VariableType>Auto Assembler Script</VariableType>
-                  <AssemblerScript>[ENABLE]
-{$LUA}
-unlockFlagData(0x34)
-{$ASM}
-
-
-[DISABLE]
-
-
-</AssemblerScript>
-                </CheatEntry>
-              </CheatEntries>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>22</ID>
-              <Description>"期限"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>54</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>4</ID>
-              <Description>"天数"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>58</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>5</ID>
-              <Description>"行动值"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>5C</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>6</ID>
-              <Description>"心情"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>60</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>7</ID>
-              <Description>"金钱"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>64</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>8</ID>
-              <Description>"当前兵力"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>68</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>9</ID>
-              <Description>"最大兵力"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>6C</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>10</ID>
-              <Description>"攻击力"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>70</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>11</ID>
-              <Description>"防御力"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>74</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>12</ID>
-              <Description>"选择兵种"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>78</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>13</ID>
-              <Description>"Endurance"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>7C</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>14</ID>
-              <Description>"好感度"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>80</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>15</ID>
-              <Description>"PleasingValue"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>84</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>16</ID>
-              <Description>"PleasingValue_DailyMax"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>88</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>17</ID>
-              <Description>"ExerciseValue"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>4 Bytes</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>8C</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>18</ID>
-              <Description>"hasBadEnd"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>Byte</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>90</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>19</ID>
-              <Description>"isHModeTutorialMode"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>Byte</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>91</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>20</ID>
-              <Description>"isHModeEndure"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>Byte</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>92</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>21</ID>
-              <Description>"isHModeConstraint"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>Byte</VariableType>
-              <Address>pPlayerData</Address>
-              <Offsets>
-                <Offset>93</Offset>
-              </Offsets>
             </CheatEntry>
           </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>22</ID>
+          <Description>"期限"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowDeadLineStage</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"天数"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowDayRound</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"行动值"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowActionValue</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>6</ID>
+          <Description>"心情"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowMoodValue</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>7</ID>
+          <Description>"金钱"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowTotalMoney</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"当前兵力"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowMonsterHp</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>9</ID>
+          <Description>"最大兵力"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.maxMonsterHp</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"攻击力"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowBaseAttack</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"防御力"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowBaseDef</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>12</ID>
+          <Description>"选择兵种"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowSelectSoldier</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>13</ID>
+          <Description>"Endurance"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowEndurance</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>14</ID>
+          <Description>"好感度"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowFriendlyValue</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>15</ID>
+          <Description>"PleasingValue"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowPleasingValue</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>16</ID>
+          <Description>"PleasingValue_DailyMax"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowPleasingValue_DailyMax</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>17</ID>
+          <Description>"ExerciseValue"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.nowExerciseValue</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>18</ID>
+          <Description>"hasBadEnd"</Description>
+          <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.hasBadEnd</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>19</ID>
+          <Description>"isHModeTutorialMode"</Description>
+          <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.isHModeTutorialMode</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>20</ID>
+          <Description>"isHModeEndure"</Description>
+          <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.isHModeEndure</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>21</ID>
+          <Description>"isHModeConstraint"</Description>
+          <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.isHModeConstraint</Offset>
+          </Offsets>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
   </CheatEntries>
-  <UserdefinedSymbols/>
-  <LuaScript>local ItemFields = {}
-
-
-local function createItemRow(parent, index, item)
-    -- Create panel for each row to hold components
-    local rowPanel = createPanel(parent)
-    rowPanel.Left = 5
-    rowPanel.Top = (index - 1) * 30 + 10 -- start from 0
-    rowPanel.Width = parent.Width - 10
-    rowPanel.Height = 25
-    rowPanel.BorderSpacing.Around = 2
-    rowPanel.BevelOuter = bvNone
-
-    -- First label
-    local label1 = createLabel(rowPanel)
-    label1.Left = 0
-    label1.Top = 5
-    label1.Caption = item.address
-
-    -- Second label
-    local label2 = createLabel(rowPanel)
-    label2.Left = 160
-    label2.Top = 5
-    label2.Caption = item.name
-
-    -- Input field (Edit box)
-    local edit = createEdit(rowPanel)
-    edit.Left = 400
-    edit.Top = 2
-    edit.Width = 160
-    edit.Text = item.value
-    edit.OnKeyUp = function(sender, key)
-        if key ~= VK_RETURN then return end
-        -- showMessage(string.format("%s: %s", label1.Caption, edit.Text))
-
-        local value = tonumber(edit.Text)
-        if not value then return end
-        writeInteger(label1.Caption, value)
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>pPlayerData</Name>
+      <Address>5BF4EBC</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>pItemBag</Name>
+      <Address>20C9FBDC</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+  <LuaScript>function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
     end
-
-    -- Add controls to table
-    ItemFields[index] = {
-        addressLabel = label1,
-        nameLabel = label2,
-        valueInput = edit
-    }
-
-
-    -- Create the popup menu
-    local popupMenu = createPopupMenu(rowPanel)
-
-    -- Add menu items
-    local menuItem1 = createMenuItem(popupMenu)
-    menuItem1.Caption = '复制地址'
-    menuItem1.OnClick = function()
-        writeToClipboard(label1.Caption)
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
     end
-    popupMenu.Items.add(menuItem1)
-
-    -- Binding the popup menu
-    label1.PopupMenu = popupMenu
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
 end
 
-local ITEM_DATA = {
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        t[fields[i].name] = fields[i].offset
+    end
+    return t
+end
+
+function mono_getClassStaticFieldAddress(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    return mono_class_getStaticFieldAddress(domain, classID)
+end
+
+function mono_getDictionaryEntryStart(dictionaryPtr)
+    local object = readPointer(dictionaryPtr)
+    local count = readInteger(object + 0x20)
+    local entries = readPointer(object + 0xC)
+    return count, entries + 0x10
+end
+
+local ITEM_NAMES = {
     [1000] = "Attr_Stength",
     [1001] = "Attr_HActionPoint",
     [1002] = "Attr_HEnergy",
@@ -659,35 +588,186 @@ local ITEM_DATA = {
     [1034] = "Attr_Sex_Count",
 }
 
-function ItemEditor_BtnRefreshClick(sender)
-    local pItemBag = getAddressSafe("[pItemBag]")
-    if not pItemBag then
-        showMessage("未获取到背包物品指针")
-        return
+function CreateListViewForm(title)
+    -- 创建主窗口
+    local mainForm = createForm()
+    mainForm.Width = 800
+    mainForm.Height = 800
+    mainForm.Caption = title .. "（双击项目修改数值）"
+    mainForm.centerScreen()
+
+    -- 按钮
+    local button = createButton(mainForm)
+    button.Caption = "刷新数据"
+    button.Top = 16
+    button.Height = 50
+    button.Left = 24
+    button.Width = mainForm.Width - button.Left * 2
+
+    -- 列表
+    local listView = createListView(mainForm)
+    listView.Left = 16
+    listView.Top = button.Top + button.Height + 20
+    listView.Width = mainForm.Width - listView.Left * 2
+    listView.Height = mainForm.Height - listView.Top - 20
+
+    listView.ReadOnly = true
+    listView.RowSelect = true
+    listView.ViewStyle = vsReport
+    listView.GridLines = true
+
+    listView.Columns.add()
+    listView.Columns[0].Width = 150
+    listView.Columns[0].Caption = "地址"
+    listView.Columns.add()
+    listView.Columns[1].Width = 300
+    listView.Columns[1].Caption = "名称"
+    listView.Columns.add()
+    listView.Columns[2].Width = 150
+    listView.Columns[2].Caption = "数值"
+
+    ----------------------------------------
+
+    -- 每个列表项的数据
+    local listItemsData = {}
+
+    local function getSelectItemData()
+        local curItem = listView.Selected
+        if not curItem then return nil end
+
+        return listItemsData[curItem.Index]
     end
 
-    local maxCount = 60
-    local needCreate = (#ItemFields == 0)
+    -- 按钮点击事件
+    button.OnClick = function(sender)
+        listView.beginUpdate()
+        listItemsData = RefreshListViewData(listView)
+        listView.endUpdate()
+    end
 
-    for index = 1, maxCount - 1 do
-        local pItem = pItemBag + index * 0x10
+    -- 列表项双击事件
+    listView.OnDblClick = function(sender)
+        local curItem = listView.Selected
+        if not curItem then return end
 
-        local itemId = readInteger(pItem)
+        local itemData = listItemsData[curItem.Index]
+        if not itemData then return end
 
-        local itemData = {
-            address = string.format("%X", pItem + 0xC),
-            name = ITEM_DATA[itemId] or itemId,
-            value = readInteger(pItem + 0xC)
-        }
+        local input = inputQuery("编辑：" .. itemData.name, "", itemData.value)
+        if not input then return end
 
-        if needCreate then
-            createItemRow(ItemEditor.ItemList, index, itemData)
-        else
-            ItemFields[index].addressLabel.Caption = itemData.address
-            ItemFields[index].nameLabel.Caption = itemData.name
-            ItemFields[index].valueInput.Text = itemData.value
+        local value = tonumber(input)
+        if not value then
+            showMessage("数值格式错误！")
+            return
         end
+
+        if itemData.type == "int" then
+            writeInteger(itemData.address, value)
+        elseif itemData.type == "float" then
+            writeFloat(itemData.address, value)
+        else
+            showMessage("数值类型错误！")
+            return
+        end
+
+        curItem.SubItems[1] = value
+        listItemsData[curItem.Index].value = value
     end
+
+    ----------------------------------------
+
+    -- 创建弹出菜单
+    local popupMenu = createPopupMenu(listView)
+
+    local menuItem1 = createMenuItem(popupMenu)
+    menuItem1.Caption = "复制地址"
+    menuItem1.OnClick = function()
+        local itemData = getSelectItemData()
+        if not itemData then return end
+        writeToClipboard(string.format("%X", itemData.address))
+    end
+    popupMenu.Items.add(menuItem1)
+
+    local menuItem2 = createMenuItem(popupMenu)
+    menuItem2.Caption = "复制名称"
+    menuItem2.OnClick = function()
+        local itemData = getSelectItemData()
+        if not itemData then return end
+        writeToClipboard(itemData.name)
+    end
+    popupMenu.Items.add(menuItem2)
+
+    local menuItem3 = createMenuItem(popupMenu)
+    menuItem3.Caption = "添加到地址列表"
+    menuItem3.OnClick = function()
+        local itemData = getSelectItemData()
+        if not itemData then return end
+
+        local record = AddressList.createMemoryRecord()
+
+        if itemData.type == "int" then
+            record.Type = vtDword
+        elseif itemData.type == "float" then
+            record.Type = vtSingle
+        else
+            return
+        end
+
+        record.Address = itemData.address
+        record.Description = itemData.name
+        record.DontSave = true
+    end
+    popupMenu.Items.add(menuItem3)
+
+    -- 绑定弹出菜单到列表
+    listView.PopupMenu = popupMenu
+
+    return mainForm
+end
+
+function RefreshListViewData(listView)
+    local listItems = listView.Items
+    local listItemsData = {}
+
+    local function createListItem(address, name)
+        local item = listItems.add()
+
+        item.Caption = string.format("%X", address)
+
+        item.SubItems.add(name)
+
+        local value = readInteger(address)
+        item.SubItems.add(value)
+
+        listItemsData[item.Index] = {
+            address = address,
+            name = name,
+            value = value,
+            type = "int"
+        }
+    end
+
+    ----------------------------------------
+
+    listItems.clear()
+
+    local count, entryStart = mono_getDictionaryEntryStart(pItemBag)
+    if not count or count == 0 then
+        return listItemsData
+    end
+
+    local entry = entryStart
+    for _ = 1, count, 1 do
+        local itemId = readInteger(entry + 0x8)
+        local itemName = ITEM_NAMES[itemId] or itemId
+
+        createListItem(entry + 0xC, itemName)
+
+        entry = entry + 0x10
+    end
+
+    return listItemsData
 end
 
 </LuaScript>
