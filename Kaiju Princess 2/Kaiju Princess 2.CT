@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if not OpenGameProcess("Kaiju Princess 2.exe", true) then
+    return
+end
+
+local classID = mono_findClass("", "PlayerData")
+local baseAddress = mono_getClassStaticFieldAddress(classID)
+if not baseAddress then return end
+
+PlayerDataOffs = mono_getClassFieldOffsets(classID)
+pPlayerData = baseAddress + PlayerDataOffs.m_Instance
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+pPlayerData = nil
+PlayerDataOffs = nil
+
+{$ASM}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"天数"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pPlayerData</Address>
+          <Offsets>
+            <Offset>PlayerDataOffs.turn</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"物品编辑"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+pItemDictionary = readPointer(pPlayerData) + PlayerDataOffs._itemDictionary
+
+CreateListViewForm("物品编辑")
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+pItemDictionary = nil
+
+{$ASM}
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"临时解锁回忆（重新打开回忆界面）"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"全部事件"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+alloc(newmem,2048,EventSItem:SetItemLock+1cd) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov byte ptr [rsi+72],00
+
+originalcode:
+movzx edx,byte ptr [rsi+72]
+mov rcx,rax
+
+exit:
+jmp returnhere
+
+EventSItem:SetItemLock+1cd:
+jmp newmem
+nop 2
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+EventSItem:SetItemLock+1cd:
+db 0F B6 56 72 48 8B C8
+//movzx edx,byte ptr [rsi+72]
+//mov rcx,rax
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>9</ID>
+              <Description>"全部CG"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+alloc(newmem,2048,CGGroupSItem:SetItemLock+137) 
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov byte ptr [rsi+58],00
+
+originalcode:
+movzx edx,byte ptr [rsi+58]
+mov rcx,rax
+
+exit:
+jmp returnhere
+
+CGGroupSItem:SetItemLock+137:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+CGGroupSItem:CGUnlockMeet+ef:
+nop 6
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+CGGroupSItem:SetItemLock+137:
+db 0F B6 56 58 48 8B C8
+//movzx edx,byte ptr [rsi+58]
+//mov rcx,rax
+
+
+
+CGGroupSItem:CGUnlockMeet+ef:
+db 33 C0 4C 0F B6 F8
+// xor eax eax
+// movzx r15,al
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"打开作弊界面（在设置界面启用）"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local classID = mono_findClass("", "MainUIManager")
+local baseAddr = mono_getClassStaticFieldAddress(classID)
+local MainUIManagerOffs = mono_getClassFieldOffsets(classID)
+local pMainUIManager = readPointer(baseAddr + MainUIManagerOffs.m_instance)
+if pMainUIManager == 0 then return end
+
+local currentPopup = readPointer(pMainUIManager + MainUIManagerOffs.currentPopup)
+if currentPopup == 0 then return end
+
+local instance = currentPopup
+local methodId = mono_findMethod("", "UI_SettingPopup", "OpenCheat")
+mono_invoke_method("", methodId, instance, {})
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        t[fields[i].name] = fields[i].offset
+    end
+    return t
+end
+
+function mono_getClassStaticFieldAddress(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    return mono_class_getStaticFieldAddress(domain, classID)
+end
+
+function mono_readString(stringPtr)
+    return mono_string_readString(readPointer(stringPtr))
+end
+
+function mono_getDictionaryEntryStart(dictionaryPtr)
+    local object = readPointer(dictionaryPtr)
+    local count = readInteger(object + 0x40)
+    local entries = readPointer(object + 0x18)
+    return count, entries + 0x20
+end
+
+function CreateListViewForm(title)
+    -- 创建主窗口
+    local mainForm = createForm()
+    mainForm.Width = 800
+    mainForm.Height = 800
+    mainForm.Caption = title .. "（双击项目修改数值）"
+    mainForm.centerScreen()
+
+    -- 按钮
+    local button = createButton(mainForm)
+    button.Caption = "刷新数据"
+    button.Top = 16
+    button.Height = 50
+    button.Left = 24
+    button.Width = mainForm.Width - button.Left * 2
+
+    -- 列表
+    local listView = createListView(mainForm)
+    listView.Left = 16
+    listView.Top = button.Top + button.Height + 20
+    listView.Width = mainForm.Width - listView.Left * 2
+    listView.Height = mainForm.Height - listView.Top - 20
+
+    listView.ReadOnly = true
+    listView.RowSelect = true
+    listView.ViewStyle = vsReport
+    listView.GridLines = true
+
+    listView.Columns.add()
+    listView.Columns[0].Width = 150
+    listView.Columns[0].Caption = "地址"
+    listView.Columns.add()
+    listView.Columns[1].Width = 300
+    listView.Columns[1].Caption = "名称"
+    listView.Columns.add()
+    listView.Columns[2].Width = 150
+    listView.Columns[2].Caption = "数值"
+
+    ----------------------------------------
+
+    -- 每个列表项的数据
+    local listItemsData = {}
+
+    local function getSelectItemData()
+        local curItem = listView.Selected
+        if not curItem then return nil end
+
+        return listItemsData[curItem.Index]
+    end
+
+    -- 按钮点击事件
+    button.OnClick = function(sender)
+        listView.beginUpdate()
+        listItemsData = RefreshListViewData(listView)
+        listView.endUpdate()
+    end
+
+    -- 列表项双击事件
+    listView.OnDblClick = function(sender)
+        local curItem = listView.Selected
+        if not curItem then return end
+
+        local itemData = listItemsData[curItem.Index]
+        if not itemData then return end
+
+        local input = inputQuery("编辑：" .. itemData.name, "", itemData.value)
+        if not input then return end
+
+        local value = tonumber(input)
+        if not value then
+            showMessage("数值格式错误！")
+            return
+        end
+
+        if itemData.type == "int" then
+            writeInteger(itemData.address, value)
+        elseif itemData.type == "float" then
+            writeFloat(itemData.address, value)
+        else
+            showMessage("数值类型错误！")
+            return
+        end
+
+        curItem.SubItems[1] = value
+        listItemsData[curItem.Index].value = value
+    end
+
+    ----------------------------------------
+
+    -- 创建弹出菜单
+    local popupMenu = createPopupMenu(listView)
+
+    local menuItem1 = createMenuItem(popupMenu)
+    menuItem1.Caption = "复制地址"
+    menuItem1.OnClick = function()
+        local itemData = getSelectItemData()
+        if not itemData then return end
+        writeToClipboard(string.format("%X", itemData.address))
+    end
+    popupMenu.Items.add(menuItem1)
+
+    local menuItem2 = createMenuItem(popupMenu)
+    menuItem2.Caption = "复制名称"
+    menuItem2.OnClick = function()
+        local itemData = getSelectItemData()
+        if not itemData then return end
+        writeToClipboard(itemData.name)
+    end
+    popupMenu.Items.add(menuItem2)
+
+    local menuItem3 = createMenuItem(popupMenu)
+    menuItem3.Caption = "添加到地址列表"
+    menuItem3.OnClick = function()
+        local itemData = getSelectItemData()
+        if not itemData then return end
+
+        local record = AddressList.createMemoryRecord()
+
+        if itemData.type == "int" then
+            record.Type = vtDword
+        elseif itemData.type == "float" then
+            record.Type = vtSingle
+        else
+            return
+        end
+
+        record.Address = itemData.address
+        record.Description = itemData.name
+        record.DontSave = true
+    end
+    popupMenu.Items.add(menuItem3)
+
+    -- 绑定弹出菜单到列表
+    listView.PopupMenu = popupMenu
+
+    return mainForm
+end
+
+function RefreshListViewData(listView)
+    local listItems = listView.Items
+    local listItemsData = {}
+
+    local function createListItem(address, name)
+        local item = listItems.add()
+
+        item.Caption = string.format("%X", address)
+
+        item.SubItems.add(name)
+
+        local value = readInteger(address)
+        item.SubItems.add(value)
+
+        listItemsData[item.Index] = {
+            address = address,
+            name = name,
+            value = value,
+            type = "int"
+        }
+    end
+
+    ----------------------------------------
+
+    listItems.clear()
+
+    local count, entryStart = mono_getDictionaryEntryStart(pItemDictionary)
+    if not count or count == 0 then
+        return listItemsData
+    end
+
+    local entry = entryStart
+    for i = 1, count, 1 do
+        local name = mono_readString(entry + 0x8)
+
+        local pItemDBEntity = readPointer(entry + 0x10)
+        createListItem(pItemDBEntity + 0x18, name)
+
+        entry = entry + 0x18
+    end
+
+    return listItemsData
+end
+
+</LuaScript>
+</CheatTable>
