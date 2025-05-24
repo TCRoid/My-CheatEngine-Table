@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if not OpenGameProcess("OutdoorExposeGirlRena.exe", true) then
+    return
+end
+
+local classID = mono_findClass("", "GameDataUtils")
+local baseAddr = mono_getClassStaticFieldAddress(classID)
+local fields = mono_getClassFieldOffsets(classID)
+
+pGameData = baseAddr + fields._gameData
+GameDataOffs = mono_getClassFieldOffsets("", "GameData")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+pGameData = nil
+GameDataOffs = nil
+
+{$ASM}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>12</ID>
+          <Description>"剧情模式进度"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pGameData</Address>
+          <Offsets>
+            <Offset>GameDataOffs.StoryModeProgressRate</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"总获得积分"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pGameData</Address>
+          <Offsets>
+            <Offset>GameDataOffs.TotalPoint</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"可用积分"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pGameData</Address>
+          <Offsets>
+            <Offset>GameDataOffs.UsefulPoint</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>15</ID>
+          <Description>"总高潮次数"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pGameData</Address>
+          <Offsets>
+            <Offset>GameDataOffs.TotalFinishCount</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>13</ID>
+          <Description>"总暴露时间"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pGameData</Address>
+          <Offsets>
+            <Offset>GameDataOffs.TotalExposeSeconds</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>14</ID>
+          <Description>"总游戏时间"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>pGameData</Address>
+          <Offsets>
+            <Offset>GameDataOffs.TotalPlaySeconds</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>18</ID>
+          <Description>"露出（每次需要重新启用）"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+local classID = mono_findClass("", "GameManager")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+pGameManager = instance
+GameManagerOffs = mono_getClassFieldOffsets(classID)
+
+pPlayerController = pGameManager + GameManagerOffs._playerController
+PlayerControllerOffs = mono_getClassFieldOffsets("", "PlayerController")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+pGameManager = nil
+GameManagerOffs = nil
+
+pPlayerController = nil
+PlayerControllerOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>30</ID>
+              <Description>"达成所有条件"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+local pClearConditionList = pGameManager + GameManagerOffs._clearConditionList
+local StoryClearConditionDataOffs = mono_getClassFieldOffsets("", "StoryClearConditionData")
+
+local object = readPointer(pClearConditionList)
+local size = readInteger(object + 0x18)
+if size == 0 then return end
+
+local items = readPointer(object + 0x10)
+local entry = items + 0x20
+for i = 0, size - 1, 1 do
+    local pStoryClearConditionData = readPointer(entry)
+    writeInteger(pStoryClearConditionData + StoryClearConditionDataOffs.ClearConditionNum, 0)
+    entry = entry + 0x8
+end
+
+
+{$ASM}
+
+
+[DISABLE]
+{$LUA}
+
+
+{$ASM}
+
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>19</ID>
+              <Description>"行走速度"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs.MoveSpeed</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>20</ID>
+              <Description>"奔跑速度"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs.SprintSpeed</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>21</ID>
+              <Description>"爬行速度"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs.CrawlingSpeed</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"RotationSmoothTime"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs.RotationSmoothTime</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>23</ID>
+              <Description>"SpeedChangeRate"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs.SpeedChangeRate</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>24</ID>
+              <Description>"垂直视角上限角度"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs.TopClamp</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>25</ID>
+              <Description>"垂直视角下限角度"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs.BottomClamp</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26</ID>
+              <Description>"PlayerColliderHeight"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs._playerColliderHeight</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27</ID>
+              <Description>"ArousalLevel"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs._arousalLevel</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28</ID>
+              <Description>"PeeSeconds"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs._peeSeconds</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>29</ID>
+              <Description>"是否回家"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pPlayerController</Address>
+              <Offsets>
+                <Offset>PlayerControllerOffs._isEnterReturnHomeArea</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>32</ID>
+          <Description>"不会被发现"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(patchAddress, "NPCManager.DisplayNPCIndicator"+1B5)
+
+[ENABLE]
+assert(patchAddress, F3 44 0F 10 88 B8 00 00 00)
+
+alloc(newmem,2048,patchAddress)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+label(float_0)
+
+newmem: //this is allocated memory, you have read,write,execute access
+movss xmm9,[float_0]
+movss [rax+000000B8],xmm9
+
+originalcode:
+//movss xmm9,[rax+000000B8]
+
+exit:
+jmp returnhere
+
+float_0:
+dd (float)0.0
+
+patchAddress:
+jmp newmem
+nop 4
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+patchAddress:
+db F3 44 0F 10 88 B8 00 00 00
+//movss xmm9,[rax+000000B8]
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"快速高潮"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(patchAddress, "PlayerController.PlayAction"+57E)
+
+[ENABLE]
+assert(patchAddress, F3 0F 11 83 E0 00 00 00)
+
+alloc(newmem,2048,patchAddress)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+label(climaxRate)
+registersymbol(climaxRate)
+
+newmem: //this is allocated memory, you have read,write,execute access
+movss xmm0,[rbx+000000E0]
+addss xmm0,[climaxRate]
+
+originalcode:
+movss [rbx+000000E0],xmm0
+
+exit:
+jmp returnhere
+
+climaxRate:
+dd (float)0.5
+
+patchAddress:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+unregistersymbol(climaxRate)
+
+dealloc(newmem)
+patchAddress:
+db F3 0F 11 83 E0 00 00 00
+//movss [rbx+000000E0],xmm0
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>17</ID>
+              <Description>"增长速率"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>climaxRate</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local name = fields[i].name
+        name = string.gsub(name, "&lt;", "")
+        name = string.gsub(name, "&gt;k__BackingField", "")
+
+        t[name] = fields[i].offset
+    end
+    return t
+end
+
+function mono_getClassStaticFieldAddress(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    return mono_class_getStaticFieldAddress(domain, classID)
+end
+
+function mono_getClassInstance(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    else
+        namespace = mono_class_getNamespace(classID)
+    end
+
+    local instance = mono_class_findInstancesOfClassListOnly(namespace, classID)
+    if not instance or #instance == 0 then
+        return nil
+    end
+    return instance[1]
+end
+
+</LuaScript>
+</CheatTable>
