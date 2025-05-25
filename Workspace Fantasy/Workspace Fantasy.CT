@@ -3,48 +3,54 @@
   <CheatEntries>
     <CheatEntry>
       <ID>5</ID>
-      <Description>"启用"</Description>
+      <Description>"初始化"</Description>
       <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 {$LUA}
-local pid = getProcessIDFromProcessName(PROCESS_NAME)
-if not pid then
-    showMessage("先启动游戏，然后重新开启此选项")
-    return
-end
-if getOpenedProcessID() ~= pid then
-    openProcess(pid)
-end
-
-if LaunchMonoDataCollector() == 0 then
-    showMessage("激活 Mono 功能失败！")
+if not OpenGameProcess("Workspace Fantasy.exe", true) then
     return
 end
 
-local classID = mono_findClass(NAMESPACE_SX, "PlayerSaveDataController")
+local classID = mono_findClass("SX", "PlayerSaveDataController")
 local instance = mono_getClassInstance(classID)
 if not instance then return end
 
 local fields = mono_getClassFieldOffsets(classID)
-if not fields then return end
 
+pPlayerSaveDataController = instance
 pPlayerSaveData = instance + fields.m_PlayerSaveData
+PlayerSaveDataOffs = mono_getClassFieldOffsets("SX", "PlayerSaveData")
 
-PlayerSaveDataOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "PlayerSaveData"))
+GameDefine = mono_getClassStaticFields("", "GameDefine")
 
 {$ASM}
 
 
+
+
 [DISABLE]
 {$LUA}
+pPlayerSaveDataController = nil
 pPlayerSaveData = nil
 PlayerSaveDataOffs = nil
+GameDefine = nil
 
 {$ASM}
 
 </AssemblerScript>
       <CheatEntries>
+        <CheatEntry>
+          <ID>81</ID>
+          <Description>"是否暂停时间"</Description>
+          <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>GameDefine._IsPauseTime</Address>
+        </CheatEntry>
         <CheatEntry>
           <ID>8</ID>
           <Description>"玩家数据"</Description>
@@ -53,10 +59,10 @@ PlayerSaveDataOffs = nil
           <AssemblerScript>[ENABLE]
 {$LUA}
 pPlayerSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_PlayerSystem
-
-PlayerSystemOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "PlayerSystem"))
+PlayerSystemOffs = mono_getClassFieldOffsets("SX", "PlayerSystem")
 
 {$ASM}
+
 
 
 [DISABLE]
@@ -234,117 +240,79 @@ TimeDataOffs = nil
               </Offsets>
             </CheatEntry>
             <CheatEntry>
-              <ID>23</ID>
+              <ID>61</ID>
               <Description>"玩家属性"</Description>
               <Options moHideChildren="1"/>
-              <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>62</ID>
+                  <Description>"增加体质"</Description>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
 {$LUA}
-pPlayerAttribute = readPointer(pPlayerSystem) + PlayerSystemOffs.m_PlayerAttribute
+local value = InputNumberDialog("增加体质", "输入要增加的数值：", "")
+if not value then return end
 
-PlayerAttributeOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "PlayerAttribute"))
+mono_invokeMethod("SX", "PlayerSaveDataController", "onSetAddPlay_Agi", pPlayerSaveDataController, {
+    { type = vtSingle, value = value }, -- t_addvalue, Single
+    { type = vtByte,   value = 0 }      -- IsJudgeDay, Boolean
+})
+
 
 {$ASM}
+assert(0,66)
 
 
 [DISABLE]
-{$LUA}
-pPlayerAttribute = nil
-PlayerAttributeOffs = nil
-
-{$ASM}
 
 </AssemblerScript>
-              <CheatEntries>
-                <CheatEntry>
-                  <ID>24</ID>
-                  <Description>"体质"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>String</VariableType>
-                  <Length>2</Length>
-                  <Unicode>1</Unicode>
-                  <CodePage>0</CodePage>
-                  <ZeroTerminate>1</ZeroTerminate>
-                  <Address>pPlayerAttribute</Address>
-                  <Offsets>
-                    <Offset>14</Offset>
-                    <Offset>PlayerAttributeOffs.Play_Agi</Offset>
-                  </Offsets>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>25</ID>
-                  <Description>"体质_time"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>String</VariableType>
-                  <Length>8</Length>
-                  <Unicode>1</Unicode>
-                  <CodePage>0</CodePage>
-                  <ZeroTerminate>1</ZeroTerminate>
-                  <Address>pPlayerAttribute</Address>
-                  <Offsets>
-                    <Offset>14</Offset>
-                    <Offset>PlayerAttributeOffs.Play_Agi_time</Offset>
-                  </Offsets>
+                  <ID>64</ID>
+                  <Description>"增加智力"</Description>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+local value = InputNumberDialog("增加智力", "输入要增加的数值：", "")
+if not value then return end
+
+mono_invokeMethod("SX", "PlayerSaveDataController", "onSetAddPlay_Int", pPlayerSaveDataController, {
+    { type = vtSingle, value = value }, -- t_addvalue, Single
+    { type = vtByte,   value = 0 }      -- IsJudgeDay, Boolean
+})
+
+
+{$ASM}
+assert(0,66)
+
+
+[DISABLE]
+
+</AssemblerScript>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>26</ID>
-                  <Description>"智力"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>String</VariableType>
-                  <Length>2</Length>
-                  <Unicode>1</Unicode>
-                  <CodePage>0</CodePage>
-                  <ZeroTerminate>1</ZeroTerminate>
-                  <Address>pPlayerAttribute</Address>
-                  <Offsets>
-                    <Offset>14</Offset>
-                    <Offset>PlayerAttributeOffs.Play_Int</Offset>
-                  </Offsets>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>27</ID>
-                  <Description>"智力_time"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>String</VariableType>
-                  <Length>8</Length>
-                  <Unicode>1</Unicode>
-                  <CodePage>0</CodePage>
-                  <ZeroTerminate>1</ZeroTerminate>
-                  <Address>pPlayerAttribute</Address>
-                  <Offsets>
-                    <Offset>14</Offset>
-                    <Offset>PlayerAttributeOffs.Play_Int_time</Offset>
-                  </Offsets>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>28</ID>
-                  <Description>"欲望"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>String</VariableType>
-                  <Length>2</Length>
-                  <Unicode>1</Unicode>
-                  <CodePage>0</CodePage>
-                  <ZeroTerminate>1</ZeroTerminate>
-                  <Address>pPlayerAttribute</Address>
-                  <Offsets>
-                    <Offset>14</Offset>
-                    <Offset>PlayerAttributeOffs.Play_Desire</Offset>
-                  </Offsets>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>29</ID>
-                  <Description>"欲望_time"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>String</VariableType>
-                  <Length>8</Length>
-                  <Unicode>1</Unicode>
-                  <CodePage>0</CodePage>
-                  <ZeroTerminate>1</ZeroTerminate>
-                  <Address>pPlayerAttribute</Address>
-                  <Offsets>
-                    <Offset>14</Offset>
-                    <Offset>PlayerAttributeOffs.Play_Desire_time</Offset>
-                  </Offsets>
+                  <ID>63</ID>
+                  <Description>"增加欲望"</Description>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+local value = InputNumberDialog("增加欲望", "输入要增加的数值：", "")
+if not value then return end
+
+mono_invokeMethod("SX", "PlayerSaveDataController", "onSetAddPlay_Desire", pPlayerSaveDataController, {
+    { type = vtSingle, value = value }, -- t_addvalue, Single
+    { type = vtByte,   value = 0 }      -- IsJudgeDay, Boolean
+})
+
+
+{$ASM}
+assert(0,66)
+
+
+[DISABLE]
+
+</AssemblerScript>
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>
@@ -358,10 +326,10 @@ PlayerAttributeOffs = nil
           <AssemblerScript>[ENABLE]
 {$LUA}
 pWorkSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_WorkSystem
-
-WorkSystemOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "WorkSystem"))
+WorkSystemOffs = mono_getClassFieldOffsets("SX", "WorkSystem")
 
 {$ASM}
+
 
 
 [DISABLE]
@@ -427,142 +395,70 @@ WorkSystemOffs = nil
         </CheatEntry>
         <CheatEntry>
           <ID>36</ID>
-          <Description>"NPC数据"</Description>
+          <Description>"NPC数据（刷新数据需重新启用）"</Description>
           <Options moHideChildren="1"/>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 {$LUA}
+local NpcDataMemRecord = AddressList.getMemoryRecordByID(36)
+if not NpcDataMemRecord then return end
+MemRecord.ClearChildren(NpcDataMemRecord)
+
 local pNpcSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_NpcSystem
+local NpcSystemOffs = mono_getClassFieldOffsets("SX", "NpcSystem")
 
-local NpcSystemOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "NpcSystem"))
+local count, entryStart = mono_getDictionaryEntryStart(readPointer(pNpcSystem) + NpcSystemOffs.m_NpcData)
+if count == 0 then return end
 
-local pNpcDataDict = readPointer(pNpcSystem) + NpcSystemOffs.m_NpcData
-local pEntries = readPointer(pNpcDataDict) + 0x18
-pEntries = readPointer(pEntries) + 0x20
+local NpcSaveDataOffs = mono_getClassFieldOffsets("SX", "NpcSaveData")
 
-local NpcSaveDataOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_SX, "NpcSaveData"))
+local entry = entryStart
+for _ = 1, count, 1 do
+    local npcName = mono_readString(entry + 0x8)
+    local pNpcSaveData = readPointer(entry + 0x10)
 
-function GetNpcData(index)
-    local pNpcData = readPointer(pEntries + (index + 1) * 0x10 + index * 0x8)
+    local header = MemRecord.CreateGroupHeader(npcName)
+    header.appendToEntry(NpcDataMemRecord)
 
-    local pGoodOpinionValueDic = readPointer(pNpcData + NpcSaveDataOffs.CurrentTalkGoodOpinionValueDic)
-    local pEntries = readPointer(pGoodOpinionValueDic + 0x18)
+    local record = MemRecord.CreateInt(pNpcSaveData + NpcSaveDataOffs.GoodOpinionValue, "好感度总计")
+    record.appendToEntry(header)
 
-    return {
-        GoodOpinionValue = pNpcData + NpcSaveDataOffs.GoodOpinionValue,
-        TalkValue = pEntries + 0x30,
-        GiftValue = pEntries + 0x48,
-        SexValue = pEntries + 0x60
-    }
+
+    local optionCount, optionEntryStart = mono_getDictionaryEntryStart(pNpcSaveData + NpcSaveDataOffs.CurrentTalkGoodOpinionValueDic)
+    if optionCount &gt; 0 then
+        local _entry = optionEntryStart
+        for __ = 1, optionCount, 1 do
+            local optionName = mono_readString(_entry + 0x8)
+            if optionName == "1" then
+                optionName = "对话"
+            elseif optionName == "2" then
+                optionName = "礼物"
+            elseif optionName == "4" then
+                optionName = "色色"
+            end
+
+            local optionRecord = MemRecord.CreateInt(_entry + 0x10, optionName)
+            optionRecord.appendToEntry(header)
+
+            _entry = _entry + 0x18
+        end
+    end
+
+
+    record = MemRecord.CreateInt(pNpcSaveData + NpcSaveDataOffs.m_NpcSpecialValue, "NpcSpecialValue")
+    record.appendToEntry(header)
+
+    entry = entry + 0x18
 end
 
-{$ASM}
-
-alloc(pSelectNpcIndex,1)
-registersymbol(pSelectNpcIndex)
-
-[DISABLE]
-dealloc(pSelectNpcIndex)
-unregistersymbol(pSelectNpcIndex)
-
-</AssemblerScript>
-          <CheatEntries>
-            <CheatEntry>
-              <ID>42</ID>
-              <Description>"选择NPC"</Description>
-              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:0
-1:1
-2:2
-3:3
-4:4
-5:5
-6:6
-7:7
-8:8
-9:9
-10:10
-11:11
-12:12
-</DropDownList>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>Byte</VariableType>
-              <Address>pSelectNpcIndex</Address>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>37</ID>
-              <Description>"NPC好感度（选择NPC后重新启用此选项）"</Description>
-              <Options moHideChildren="1"/>
-              <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
-{$LUA}
-local pSelectNpcIndex = getAddressSafe("pSelectNpcIndex")
-if not pSelectNpcIndex then return end
-
-local npcIndex = readByte(pSelectNpcIndex)
-SelectNpcData = GetNpcData(npcIndex)
 
 {$ASM}
 
-
-[DISABLE]
-{$LUA}
-SelectNpcData = nil
-{$ASM}
-
-</AssemblerScript>
-              <CheatEntries>
-                <CheatEntry>
-                  <ID>38</ID>
-                  <Description>"总计"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>4 Bytes</VariableType>
-                  <Address>SelectNpcData.GoodOpinionValue</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>39</ID>
-                  <Description>"对话"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>4 Bytes</VariableType>
-                  <Address>SelectNpcData.TalkValue</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>40</ID>
-                  <Description>"送礼物"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>4 Bytes</VariableType>
-                  <Address>SelectNpcData.GiftValue</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>41</ID>
-                  <Description>"色色"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>4 Bytes</VariableType>
-                  <Address>SelectNpcData.SexValue</Address>
-                </CheatEntry>
-              </CheatEntries>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>43</ID>
-              <Description>"所有NPC满好感度"</Description>
-              <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
-{$LUA}
-for i = 0, 12 do
-    local npcData = GetNpcData(i)
-    writeInteger(npcData.GoodOpinionValue, 888)
-    writeInteger(npcData.TalkValue, 100)
-    writeInteger(npcData.GiftValue, 100)
-    writeInteger(npcData.SexValue, 100)
-end
-
-{$ASM}
 
 
 [DISABLE]
 
 </AssemblerScript>
-            </CheatEntry>
-          </CheatEntries>
         </CheatEntry>
         <CheatEntry>
           <ID>54</ID>
@@ -572,14 +468,14 @@ end
           <AssemblerScript>[ENABLE]
 {$LUA}
 local classID = mono_findClass("aqagz", "Game_Mine_BaseConfigs")
-local domain = mono_enumDomains()[1]
-local baseAddress = mono_class_getStaticFieldAddress(domain, classID)
+local baseAddress = mono_getClassStaticFieldAddress(classID)
 local fields = mono_getClassFieldOffsets(classID)
 
 registerSymbol("curMineToolAtk", baseAddress + fields.curMineToolAtk)
 registerSymbol("curMineToolAtk_gaotou", baseAddress + fields.curMineToolAtk_gaotou)
 
 {$ASM}
+
 
 
 [DISABLE]
@@ -609,26 +505,31 @@ unregisterSymbol("curMineToolAtk_gaotou")
               <ID>51</ID>
               <Description>"工具耐久不减"</Description>
               <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
+              <AssemblerScript>define(patchAddress1, "aqagz.Game_Mine_BaseConfigs.UseMineToolDurability"+122)
+define(patchAddress2, "aqagz.Game_Mine_BaseConfigs.UseMineToolDurability_gaotou"+148)
+define(bytes, FF 48 1C)
 
-"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability"+122:
+[ENABLE]
+assert(patchAddress1,bytes)
+assert(patchAddress2,bytes)
+
+patchAddress1:
 nop 3
 
 
-"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability_gaotou"+148:
+patchAddress2:
 nop 3
 
 
 
 [DISABLE]
-
-"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability"+122:
-db FF 48 1C
+patchAddress1:
+db bytes
 //dec [rax+1C]
 
 
-"aqagz.Game_Mine_BaseConfigs.UseMineToolDurability_gaotou"+148:
-db FF 48 1C
+patchAddress2:
+db bytes
 //dec [rax+1C]
 
 </AssemblerScript>
@@ -636,63 +537,120 @@ db FF 48 1C
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
-          <ID>48</ID>
-          <Description>"使用物品数量不减"</Description>
+          <ID>59</ID>
+          <Description>"修改奔跑速度"</Description>
+          <Options moHideChildren="1"/>
           <VariableType>Auto Assembler Script</VariableType>
-          <AssemblerScript>[ENABLE]
-alloc(newmem,2048,"SX.PlayerSaveDataController.onRemoveBag"+118)
+          <AssemblerScript>define(patchAddress, "GameDefine.onGetPlayerSpeed"+11C)
+define(bytes, 0F 28 C6 0F 28 74 24 20)
+
+[ENABLE]
+assert(patchAddress,bytes)
+
+alloc(newmem,2048,patchAddress)
 label(returnhere)
 label(originalcode)
 label(exit)
 
+label(playerSpeed)
+registersymbol(playerSpeed)
+
 newmem: //this is allocated memory, you have read,write,execute access
-//place your code here
+movss xmm6,[playerSpeed]
 
 originalcode:
-//sub eax,[rsi+18]
-mov [r14+18],eax
+movaps xmm0,xmm6
+movaps xmm6,[rsp+20]
 
 exit:
 jmp returnhere
 
-"SX.PlayerSaveDataController.onRemoveBag"+118:
+playerSpeed:
+dd (float)8.0
+
+patchAddress:
 jmp newmem
-nop 2
+nop 3
 returnhere:
 
 
  
  
 [DISABLE]
+unregistersymbol(playerSpeed)
+
 dealloc(newmem)
-"SX.PlayerSaveDataController.onRemoveBag"+118:
-db 2B 46 18 41 89 46 18
+patchAddress:
+db bytes
+//movaps xmm0,xmm6
+//movaps xmm6,[rsp+20]
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>60</ID>
+              <Description>"奔跑速度"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>playerSpeed</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>48</ID>
+          <Description>"使用物品数量不减"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(patchAddress, "SX.PlayerSaveDataController.onRemoveBag"+118)
+define(bytes, 2B 46 18 41 89 46 18)
+
+[ENABLE]
+assert(patchAddress,bytes)
+
+patchAddress:
+nop 7
+
+ 
+ 
+[DISABLE]
+patchAddress:
+db bytes
 //sub eax,[rsi+18]
 //mov [r14+18],eax
 </AssemblerScript>
         </CheatEntry>
         <CheatEntry>
           <ID>58</ID>
-          <Description>"获取物品数量为500"</Description>
+          <Description>"增加获取物品的数量"</Description>
+          <Options moHideChildren="1"/>
           <VariableType>Auto Assembler Script</VariableType>
-          <AssemblerScript>[ENABLE]
-alloc(newmem,2048,"SX.PlayerSaveDataController.onAddBag"+1FD) 
+          <AssemblerScript>define(patchAddress, "SX.PlayerSaveDataController.onAddBag"+1FD)
+define(bytes, 41 8B 4E 18 03 4E 18)
+
+[ENABLE]
+assert(patchAddress,bytes)
+
+alloc(newmem,2048,patchAddress)
 label(returnhere)
 label(originalcode)
 label(exit)
+
+label(addItemCount)
+registersymbol(addItemCount)
 
 newmem: //this is allocated memory, you have read,write,execute access
 //place your code here
 
 originalcode:
 mov ecx,[r14+18]
-add ecx,1F4
+add ecx,[addItemCount]
 //add ecx,[rsi+18]
 
 exit:
 jmp returnhere
 
-"SX.PlayerSaveDataController.onAddBag"+1FD:
+addItemCount:
+dd (int)100
+
+patchAddress:
 jmp newmem
 nop 2
 returnhere:
@@ -701,29 +659,136 @@ returnhere:
  
  
 [DISABLE]
+unregistersymbol(addItemCount)
+
 dealloc(newmem)
-"SX.PlayerSaveDataController.onAddBag"+1FD:
-db 41 8B 4E 18 03 4E 18
+patchAddress:
+db bytes
 //mov ecx,[r14+18]
 //add ecx,[rsi+18]
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>79</ID>
+              <Description>"增加数量"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>addItemCount</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>80</ID>
+          <Description>"解锁全部回忆（临时）"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(unlockInvite, "SX.PlayerSaveDataController.onIsUnlockInvite"+5B)
+define(unlockMerory, "SX.PlayerSaveDataController.onIsUnlockMerory"+5B)
+define(unlockPaint, "SX.PlayerSaveDataController.onIsUnlockPaint"+5B)
+define(unlockPhoto, "SX.PlayerSaveDataController.onIsUnlockPhoto"+5B)
+
+define(originalBytes, 84 C0 0F 95 C0)
+//test al,al
+//setne al
+
+define(patchBytes, B0 01 0F 1F 00)
+//mov al,1
+//nop 3
+
+[ENABLE]
+assert(unlockInvite,originalBytes)
+assert(unlockMerory,originalBytes)
+assert(unlockPaint,originalBytes)
+assert(unlockPhoto,originalBytes)
+
+unlockInvite:
+db patchBytes
+
+unlockMerory:
+db patchBytes
+
+unlockPaint:
+db patchBytes
+
+unlockPhoto:
+db patchBytes
+
+
+
+[DISABLE]
+unlockInvite:
+db originalBytes
+
+unlockMerory:
+db originalBytes
+
+unlockPaint:
+db originalBytes
+
+unlockPhoto:
+db originalBytes
+
 </AssemblerScript>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
-  <LuaScript>PROCESS_NAME = "Workspace Fantasy.exe"
-NAMESPACE_SX = "SX"
+  <LuaScript>function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
 
-function mono_getClassInstance(classID)
-    local instance = mono_class_findInstancesOfClassListOnly(mono_class_getNamespace(classID), classID)
+function InputNumberDialog(caption, prompt, initialstring)
+    local input = inputQuery(caption, prompt, initialstring)
+    if not input then
+        return nil
+    end
+
+    local value = tonumber(input)
+    if not value then
+        showMessage("数值格式错误！")
+        return nil
+    end
+
+    return value
+end
+
+function mono_getClassInstance(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    else
+        namespace = mono_class_getNamespace(classID)
+    end
+
+    local instance = mono_class_findInstancesOfClassListOnly(namespace, classID)
     if not instance or #instance == 0 then
         return nil
     end
     return instance[1]
 end
 
-function mono_getClassFieldOffsets(classID)
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
     local fields = mono_class_enumFields(classID)
     if not fields or #fields == 0 then
         return nil
@@ -734,6 +799,103 @@ function mono_getClassFieldOffsets(classID)
         t[fields[i].name] = fields[i].offset
     end
     return t
+end
+
+function mono_getClassStaticFieldAddress(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    return mono_class_getStaticFieldAddress(domain, classID)
+end
+
+function mono_getClassStaticFields(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    local staticBaseAddress = mono_class_getStaticFieldAddress(domain, classID)
+
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local field = fields[i]
+        if field.isStatic then
+            t[field.name] = staticBaseAddress + field.offset
+        end
+    end
+    return t
+end
+
+function mono_readString(stringPtr)
+    return mono_string_readString(readPointer(stringPtr))
+end
+
+function mono_getDictionaryEntryStart(dictionaryPtr)
+    local object = readPointer(dictionaryPtr)
+    local count = readInteger(object + 0x20)
+    local entries = readPointer(object + 0x18)
+    return count, entries + 0x20
+end
+
+function mono_invokeMethod(namsespace, className, methodName, instance, args)
+    local methodId = mono_findMethod(namsespace, className, methodName)
+    if not methodId then
+        showMessage("Not found method!")
+        return
+    end
+    return mono_invoke_method(namsespace, methodId, instance, args)
+end
+
+MemRecord = {}
+
+MemRecord.CreateInt = function(address, description)
+    local record = AddressList.createMemoryRecord()
+    record.Type = vtDword
+    record.Address = address
+    record.Description = description
+    record.ShowAsSigned = true
+    record.DontSave = true
+    return record
+end
+
+MemRecord.CreateGroupHeader = function(description)
+    local record = AddressList.createMemoryRecord()
+    record.Description = description
+    record.IsGroupHeader = true
+    record.Options = "[moHideChildren]"
+    record.DontSave = true
+    return record
+end
+
+MemRecord.ClearChildren = function(memRecord)
+    local count = memRecord.Count
+    if count &gt; 0 then
+        for i = count - 1, 0, -1 do
+            memRecord.Child[i].destroy()
+        end
+    end
 end
 
 </LuaScript>
