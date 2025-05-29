@@ -2,6 +2,12 @@
 <CheatTable CheatEngineTableVersion="46">
   <CheatEntries>
     <CheatEntry>
+      <ID>82</ID>
+      <Description>"适用于 Workspace Fantasy v1.3.0 ~ v1.3.1"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
       <ID>5</ID>
       <Description>"初始化"</Description>
       <Options moHideChildren="1"/>
@@ -394,23 +400,44 @@ WorkSystemOffs = nil
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
-          <ID>36</ID>
-          <Description>"NPC数据（刷新数据需重新启用）"</Description>
+          <ID>172</ID>
+          <Description>"NPC 数据"</Description>
           <Options moHideChildren="1"/>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
+{$LUA}
+pNpcSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_NpcSystem
+NpcSystemOffs = mono_getClassFieldOffsets("SX", "NpcSystem")
+
+NpcSaveDataOffs = mono_getClassFieldOffsets("SX", "NpcSaveData")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+pNpcSystem = nil
+NpcSystemOffs = nil
+NpcSaveDataOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>36</ID>
+              <Description>"NPC 好感度（刷新数据需重新启用）"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
 {$LUA}
 local NpcDataMemRecord = AddressList.getMemoryRecordByID(36)
 if not NpcDataMemRecord then return end
 MemRecord.ClearChildren(NpcDataMemRecord)
 
-local pNpcSystem = readPointer(pPlayerSaveData) + PlayerSaveDataOffs.m_NpcSystem
-local NpcSystemOffs = mono_getClassFieldOffsets("SX", "NpcSystem")
-
 local count, entryStart = mono_getDictionaryEntryStart(readPointer(pNpcSystem) + NpcSystemOffs.m_NpcData)
 if count == 0 then return end
-
-local NpcSaveDataOffs = mono_getClassFieldOffsets("SX", "NpcSaveData")
 
 local entry = entryStart
 for _ = 1, count, 1 do
@@ -459,6 +486,41 @@ end
 [DISABLE]
 
 </AssemblerScript>
+              <CheatEntries/>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>217</ID>
+              <Description>"修改所有 NPC 总好感度"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+local value = InputNumberDialog("修改所有 NPC 总好感度")
+if not value then return end
+
+local count, entryStart = mono_getDictionaryEntryStart(readPointer(pNpcSystem) + NpcSystemOffs.m_NpcData)
+if count == 0 then return end
+
+local entry = entryStart
+for _ = 1, count, 1 do
+    local pNpcSaveData = readPointer(entry + 0x10)
+    writeInteger(pNpcSaveData + NpcSaveDataOffs.GoodOpinionValue, value)
+
+    entry = entry + 0x18
+end
+
+{$ASM}
+assert(0,0)
+
+
+
+[DISABLE]
+{$LUA}
+
+{$ASM}
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
         </CheatEntry>
         <CheatEntry>
           <ID>54</ID>
@@ -733,7 +795,31 @@ db originalBytes
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
-  <LuaScript>function OpenGameProcess(processName, enableMono)
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
     local pid = getProcessIDFromProcessName(processName)
     if not pid then
         showMessage("先启动游戏，然后重新开启此选项")
@@ -752,7 +838,7 @@ db originalBytes
 end
 
 function InputNumberDialog(caption, prompt, initialstring)
-    local input = inputQuery(caption, prompt, initialstring)
+    local input = inputQuery(caption, prompt or "", initialstring or "")
     if not input then
         return nil
     end
