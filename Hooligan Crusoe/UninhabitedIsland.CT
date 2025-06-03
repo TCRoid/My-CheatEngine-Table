@@ -2,48 +2,50 @@
 <CheatTable CheatEngineTableVersion="46">
   <CheatEntries>
     <CheatEntry>
-      <ID>7</ID>
-      <Description>"启用"</Description>
+      <ID>0</ID>
+      <Description>"适用于 UninhabitedIsland.exe v1.6.0+"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
       <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 {$LUA}
-local pid = getProcessIDFromProcessName(PROCESS_NAME)
-if not pid then
-    showMessage("先启动游戏，然后重新开启此选项")
-    return
-end
-if getOpenedProcessID() ~= pid then
-    openProcess(pid)
-end
-
-if LaunchMonoDataCollector() == 0 then
-    showMessage("激活 Mono 功能失败！")
-    return
-end
+if syntaxcheck then return end
+if not OpenGameProcess("UninhabitedIsland.exe", true) then return end
 
 {$ASM}
 
+
+
 [DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+{$ASM}
 
 </AssemblerScript>
       <CheatEntries>
         <CheatEntry>
-          <ID>1</ID>
+          <ID>3</ID>
           <Description>"玩家数据"</Description>
           <Options moHideChildren="1"/>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 {$LUA}
-local classID = mono_findClass(NAMESPACE_UNI, "GameManager")
+local classID = mono_findClass("Ephra.Framework.UnI", "GameManager")
 local instance = mono_getClassInstance(classID)
 if not instance then return end
 
 local offsets = mono_getClassFieldOffsets(classID)
 if not offsets then return end
 
-PlayerEntityOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_UNI, "PlayerEntity"))
-PlayerDataFormatOffs = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_MAIN, "ArchiveDataFormat"))
+PlayerEntityOffs = mono_getClassFieldOffsets("Ephra.Framework.UnI", "PlayerEntity")
+PlayerDataFormatOffs = mono_getClassFieldOffsets("Ephra.Framework", "ArchiveDataFormat")
 
 registerSymbol("pGameManager", instance)
 registerSymbol("pPlayerEntity", instance + offsets.PlayerEntity)
@@ -78,7 +80,7 @@ unregisterSymbol("pPlayerStamina")
               </Offsets>
             </CheatEntry>
             <CheatEntry>
-              <ID>3</ID>
+              <ID>5</ID>
               <Description>"金币"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
@@ -145,12 +147,12 @@ unregisterSymbol("pPlayerStamina")
 local pAttributeEntity = getAddress("[pPlayerEntity]+PlayerEntityOffs.Attribute")
 pAttributeEntity = readPointer(pAttributeEntity)
 
-local offsets = mono_getClassFieldOffsets(mono_findClass(NAMESPACE_MAIN, "AttributeEntity"))
+local offsets = mono_getClassFieldOffsets("Ephra.Framework", "AttributeEntity")
 if not offsets then return end
 
-PlayerAttributePtrs = {}
+PlayerAttribute = {}
 for name, offset in pairs(offsets) do
-    PlayerAttributePtrs[name] = pAttributeEntity + offset
+    PlayerAttribute[name] = pAttributeEntity + offset
 end
 
 {$ASM}
@@ -158,7 +160,7 @@ end
 
 [DISABLE]
 {$LUA}
-PlayerAttributePtrs = nil
+PlayerAttribute = nil
 
 {$ASM}
 
@@ -175,70 +177,70 @@ PlayerAttributePtrs = nil
                       <Description>"InitialHealth"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs.InitialHealth</Address>
+                      <Address>PlayerAttribute.InitialHealth</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>41</ID>
                       <Description>"InitialHealthRegenerationRate"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs.InitialHealthRegenerationRate</Address>
+                      <Address>PlayerAttribute.InitialHealthRegenerationRate</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>42</ID>
                       <Description>"InitialAttackPower"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs.InitialAttackPower</Address>
+                      <Address>PlayerAttribute.InitialAttackPower</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>43</ID>
                       <Description>"InitialCriticalHitRate"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs.InitialCriticalHitRate</Address>
+                      <Address>PlayerAttribute.InitialCriticalHitRate</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>44</ID>
                       <Description>"InitialCriticalHitMultiple"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs.InitialCriticalHitMultiple</Address>
+                      <Address>PlayerAttribute.InitialCriticalHitMultiple</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>45</ID>
                       <Description>"InitialDefense"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs.InitialDefense</Address>
+                      <Address>PlayerAttribute.InitialDefense</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>46</ID>
                       <Description>"InitialAttackInterval"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs.InitialAttackInterval</Address>
+                      <Address>PlayerAttribute.InitialAttackInterval</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>47</ID>
                       <Description>"InitialAttackRange"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs.InitialAttackRange</Address>
+                      <Address>PlayerAttribute.InitialAttackRange</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>48</ID>
                       <Description>"InitialBulletCount"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs.InitialBulletCount</Address>
+                      <Address>PlayerAttribute.InitialBulletCount</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>49</ID>
                       <Description>"InitialHitCooldown"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs.InitialHitCooldown</Address>
+                      <Address>PlayerAttribute.InitialHitCooldown</Address>
                     </CheatEntry>
                   </CheatEntries>
                 </CheatEntry>
@@ -253,7 +255,7 @@ PlayerAttributePtrs = nil
                       <Description>"Health"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs._healthValue</Address>
+                      <Address>PlayerAttribute._healthValue</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -263,7 +265,7 @@ PlayerAttributePtrs = nil
                       <Description>"HealthRegenerationRate"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs._healthRegenerationRate</Address>
+                      <Address>PlayerAttribute._healthRegenerationRate</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -273,7 +275,7 @@ PlayerAttributePtrs = nil
                       <Description>"AttackPower"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs._attackPower</Address>
+                      <Address>PlayerAttribute._attackPower</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -283,7 +285,7 @@ PlayerAttributePtrs = nil
                       <Description>"CriticalHitRate"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs._criticalHitRate</Address>
+                      <Address>PlayerAttribute._criticalHitRate</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -293,7 +295,7 @@ PlayerAttributePtrs = nil
                       <Description>"CriticalHitDamage"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs._criticalHitDamage</Address>
+                      <Address>PlayerAttribute._criticalHitDamage</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -303,7 +305,7 @@ PlayerAttributePtrs = nil
                       <Description>"Defense"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs._defense </Address>
+                      <Address>PlayerAttribute._defense </Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -313,7 +315,7 @@ PlayerAttributePtrs = nil
                       <Description>"AttackInterval"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs._attackInterval</Address>
+                      <Address>PlayerAttribute._attackInterval</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -323,7 +325,7 @@ PlayerAttributePtrs = nil
                       <Description>"AttackRange"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Float</VariableType>
-                      <Address>PlayerAttributePtrs._attackRange</Address>
+                      <Address>PlayerAttribute._attackRange</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -333,7 +335,7 @@ PlayerAttributePtrs = nil
                       <Description>"BulletCount"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
-                      <Address>PlayerAttributePtrs._bulletCount</Address>
+                      <Address>PlayerAttribute._bulletCount</Address>
                       <Offsets>
                         <Offset>18</Offset>
                       </Offsets>
@@ -351,8 +353,7 @@ PlayerAttributePtrs = nil
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 {$LUA}
-local classID = mono_findClass(NAMESPACE_UNI, "GameWindow")
-local instances = mono_getClassInstances(classID)
+local instances = mono_getClassInstances("Ephra.Framework.UnI", "GameWindow")
 if not instances then return end
 
 local pGameWindow = 0
@@ -465,44 +466,59 @@ end
               <ID>18</ID>
               <Description>"必定获得鱼"</Description>
               <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
-alloc(newmem,2048,Ephra.Framework.UnI.FishingPopup:OnCompleteFishing+14e) 
+              <AssemblerScript>define(patchAddress, Ephra.Framework.UnI.FishingPopup:OnCompleteFishing+16e)
+define(bytes, 66 0F 2F C8 40 0F 92 C0)
+
+[ENABLE]
+assert(patchAddress,bytes)
+
+alloc(newmem,2048,patchAddress)
 label(returnhere)
 label(originalcode)
 label(exit)
 
+label(floatNum)
+
 newmem: //this is allocated memory, you have read,write,execute access
-xorps xmm0, xmm0
+movss xmm0,[floatNum]
 
 originalcode:
-//mov r11,UnityEngine.Mathf:Abs
-//call r11
+comisd xmm1,xmm0
+setb al
 
 exit:
 jmp returnhere
 
-Ephra.Framework.UnI.FishingPopup:OnCompleteFishing+14e:
+floatNum:
+dd (float)0.0
+
+patchAddress:
 jmp newmem
-nop 8
+nop 3
 returnhere:
 
 
- 
- 
+
+
 [DISABLE]
 dealloc(newmem)
-Ephra.Framework.UnI.FishingPopup:OnCompleteFishing+14e:
-db 49 BB ? ? ? ? ? ? ? ? 41 FF D3
-//mov r11,UnityEngine.Mathf:Abs
-//call r11
+patchAddress:
+db 66 0F 2F C8 40 0F 92 C0
+//comisd xmm1,xmm0
+//setb al
 </AssemblerScript>
             </CheatEntry>
             <CheatEntry>
               <ID>22</ID>
               <Description>"立即钓鱼（配合使用 必定获得鱼）"</Description>
               <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
-alloc(newmem,2048,Ephra.Framework.UnI.FishingPopup:ScheduleUpdate+94) 
+              <AssemblerScript>define(patchAddress, Ephra.Framework.UnI.FishingPopup:ScheduleUpdate+94)
+define(bytes, F3 0F 5A C9 66 0F 2F C8)
+
+[ENABLE]
+assert(patchAddress,bytes)
+
+alloc(newmem,2048,patchAddress)
 label(returnhere)
 label(originalcode)
 label(exit)
@@ -517,7 +533,7 @@ comisd xmm1,xmm0
 exit:
 jmp returnhere
 
-Ephra.Framework.UnI.FishingPopup:ScheduleUpdate+94:
+patchAddress:
 jmp newmem
 nop 3
 returnhere:
@@ -527,8 +543,8 @@ returnhere:
  
 [DISABLE]
 dealloc(newmem)
-Ephra.Framework.UnI.FishingPopup:ScheduleUpdate+94:
-db F3 0F 5A C9 66 0F 2F C8
+patchAddress:
+db bytes
 //cvtss2sd xmm1,xmm1
 //comisd xmm1,xmm0
 </AssemblerScript>
@@ -537,39 +553,26 @@ db F3 0F 5A C9 66 0F 2F C8
         </CheatEntry>
         <CheatEntry>
           <ID>23</ID>
-          <Description>"一击即毁（重新进入当前场景）"</Description>
+          <Description>"一击即毁"</Description>
           <VariableType>Auto Assembler Script</VariableType>
-          <AssemblerScript>[ENABLE]
-alloc(newmem,2048,Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+23) 
-label(returnhere)
-label(originalcode)
-label(exit)
+          <AssemblerScript>define(patchAddress, Ephra.Framework.UnI.HarvestOnceCropCommand:OnExecute+c0)
+define(bytes, 48 63 48 2C FF C9 89 48 2C)
 
-newmem: //this is allocated memory, you have read,write,execute access
-mov rax,1
-mov eax,1
+[ENABLE]
+assert(patchAddress,bytes)
 
-originalcode:
-mov rsi,[rsp]
-add rsp,08
-
-exit:
-jmp returnhere
-
-Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+23:
-jmp newmem
-nop 3
-returnhere:
+patchAddress:
+mov [rax+2C],0
+nop 2
 
 
- 
- 
+
 [DISABLE]
-dealloc(newmem)
-Ephra.Framework.UnI.CropEntity:get_RequiredHarvestAction+23:
-db 48 8B 34 24 48 83 C4 08
-//mov rsi,[rsp]
-//add rsp,08
+patchAddress:
+db bytes
+//movsxd rcx,dword ptr [rax+2C]
+//dec ecx
+//mov [rax+2C],ecx
 </AssemblerScript>
         </CheatEntry>
         <CheatEntry>
@@ -578,49 +581,54 @@ db 48 8B 34 24 48 83 C4 08
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 {$LUA}
-local classID = mono_findClass(NAMESPACE_UNI, "CropEntity")
+local classID = mono_findClass("Ephra.Framework.UnI", "CropEntity")
 local instances = mono_getClassInstances(classID)
-if not instances then
-    return
-end
+if not instances then return end
+if #instances == 0 then return end
+
+local CropEntityOffs = mono_getClassFieldOffsets(classID)
+local CropFormatOffs = mono_getClassFieldOffsets("Ephra.Framework", "CropFormat")
+local EnvironmentCropFormatOffs = mono_getClassFieldOffsets("Ephra.Framework", "EnvironmentCropFormat")
+local CropGrowthOffs = mono_getClassFieldOffsets("Ephra.Framework", "CropGrowth")
 
 for i = 1, #instances do
     local pCropEntity = instances[i]
 
-    local pCropFormat = readPointer(pCropEntity + 0x40)
+    local pCropFormat = readPointer(pCropEntity + CropEntityOffs._format)
     if pCropFormat == 0 then
-        goto continue
+        goto CONTINUE
     end
 
-    if readInteger(pCropFormat + 0x1C) == 0xFFFFFFFF then -- seedItemID
-        goto continue
+    if readInteger(pCropFormat + CropFormatOffs.SeedItemID) == 0xFFFFFFFF then
+        goto CONTINUE
     end
 
-    local MaturityDays = readInteger(pCropFormat + 0x28)
+    local MaturityDays = readInteger(pCropFormat + CropFormatOffs.MaturityDays)
     if MaturityDays == 0xFFFFFFFF then
-        goto continue
+        goto CONTINUE
     end
+    writeByte(pCropFormat + CropFormatOffs.GrowthNeedWater, 0)
 
 
-    local pEnvironmentCropFormat = readPointer(pCropEntity + 0x48)
+    local pEnvironmentCropFormat = readPointer(pCropEntity + CropEntityOffs._environmentCropFormat)
     if pEnvironmentCropFormat == 0 then
-        goto continue
+        goto CONTINUE
     end
-    writeInteger(pEnvironmentCropFormat + 0x28, MaturityDays) -- CropGrowthDay
+    writeInteger(pEnvironmentCropFormat + EnvironmentCropFormatOffs.CropGrowthDay, MaturityDays)
+    writeByte(pEnvironmentCropFormat + EnvironmentCropFormatOffs.GrowthNeedWater, 0)
 
 
-    local pCropGrowthData = readPointer(pCropEntity + 0x50)
+    local pCropGrowthData = readPointer(pCropEntity + CropEntityOffs._cropGrowthData)
     if pCropGrowthData == 0 then
-        goto continue
+        goto CONTINUE
     end
-    writeInteger(pCropGrowthData + 0x1C, MaturityDays) -- GrowthDay
+    writeInteger(pCropGrowthData + CropGrowthOffs.GrowthDay, MaturityDays)
 
 
-    ::continue::
+    ::CONTINUE::
 end
 
 {$ASM}
-
 
 [DISABLE]
 
@@ -630,14 +638,18 @@ end
           <ID>24</ID>
           <Description>"立即满 Sex 条"</Description>
           <VariableType>Auto Assembler Script</VariableType>
-          <AssemblerScript>[ENABLE]
-alloc(newmem,2048,Ephra.Framework.UnI.SexWindow:OnRefreshClimaxValue+8d) 
+          <AssemblerScript>define(patchAddress, Ephra.Framework.UnI.SexWindow:OnRefreshClimaxValue+8d)
+define(bytes, F2 0F 59 CA F2 0F 58 C1)
+
+[ENABLE]
+assert(patchAddress,bytes)
+
+alloc(newmem,2048,patchAddress)
 label(returnhere)
 label(originalcode)
 label(exit)
 
 newmem: //this is allocated memory, you have read,write,execute access
-//place your code here
 
 originalcode:
 //mulsd xmm1,xmm2
@@ -647,7 +659,7 @@ addsd xmm0,xmm2
 exit:
 jmp returnhere
 
-Ephra.Framework.UnI.SexWindow:OnRefreshClimaxValue+8d:
+patchAddress:
 jmp newmem
 nop 3
 returnhere:
@@ -657,8 +669,8 @@ returnhere:
  
 [DISABLE]
 dealloc(newmem)
-Ephra.Framework.UnI.SexWindow:OnRefreshClimaxValue+8d:
-db F2 0F 59 CA F2 0F 58 C1
+patchAddress:
+db bytes
 //mulsd xmm1,xmm2
 //addsd xmm0,xmm1
 </AssemblerScript>
@@ -667,27 +679,87 @@ db F2 0F 59 CA F2 0F 58 C1
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
-  <LuaScript>PROCESS_NAME = "UninhabitedIsland.exe"
-NAMESPACE_UNI = "Ephra.Framework.UnI"
-NAMESPACE_MAIN = "Ephra.Framework"
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
 
-function mono_getClassInstance(classID)
-    local instance = mono_class_findInstancesOfClassListOnly(mono_class_getNamespace(classID), classID)
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassInstance(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    else
+        namespace = mono_class_getNamespace(classID)
+    end
+
+    local instance = mono_class_findInstancesOfClassListOnly(namespace, classID)
     if not instance or #instance == 0 then
         return nil
     end
     return instance[1]
 end
 
-function mono_getClassInstances(classID)
-    local instance = mono_class_findInstancesOfClassListOnly(mono_class_getNamespace(classID), classID)
+function mono_getClassInstances(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    else
+        namespace = mono_class_getNamespace(classID)
+    end
+
+    local instance = mono_class_findInstancesOfClassListOnly(namespace, classID)
     if not instance or #instance == 0 then
         return nil
     end
     return instance
 end
 
-function mono_getClassFieldOffsets(classID)
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
     local fields = mono_class_enumFields(classID)
     if not fields or #fields == 0 then
         return nil
@@ -699,6 +771,5 @@ function mono_getClassFieldOffsets(classID)
     end
     return t
 end
-
 </LuaScript>
 </CheatTable>
