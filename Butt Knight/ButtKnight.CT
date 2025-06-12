@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 ButtKnight.exe Build.18427040"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("ButtKnight.exe", true) then return end
+
+local classID = mono_findClass("ClimbGames.AssKnight", "GameManager")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+pGameManager = instance
+GameManagerOffs = mono_getClassFieldOffsets(classID)
+
+StageSceneOffs = mono_getClassFieldOffsets("ClimbGames.AssKnight", "StageScene")
+PlayerHPOffs = mono_getClassFieldOffsets("", "PlayerHP")
+PlayerControllerOffs = mono_getClassFieldOffsets("", "PlayerController")
+WeaponOffs = mono_getClassFieldOffsets("", "Weapon")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pGameManager = nil
+GameManagerOffs = nil
+
+StageSceneOffs = nil
+PlayerHPOffs = nil
+PlayerControllerOffs = nil
+WeaponOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>27</ID>
+          <Description>"玩家默认数据"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pGameSettings = pGameManager + GameManagerOffs.GameSettings
+GameSettingsOffs = mono_getClassFieldOffsets("ClimbGames.AssKnight", "GameSettings")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pGameSettings = nil
+GameSettingsOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>28</ID>
+              <Description>"playerLife"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerLife</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>29</ID>
+              <Description>"playerBoom"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerBoom</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>30</ID>
+              <Description>"playerWeapon"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerWeapon</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>31</ID>
+              <Description>"playerHp"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerHp</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>32</ID>
+              <Description>"playerWeaponDamageMultiplier"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerWeaponDamageMultiplier</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>33</ID>
+              <Description>"playerSpawnTime"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerSpawnTime</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>34</ID>
+              <Description>"playerSpawnInvincibleTime"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerSpawnInvincibleTime</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>35</ID>
+              <Description>"playerDamagedInvincibleTime"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.playerDamagedInvincibleTime</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>36</ID>
+              <Description>"invincibleAlphaInterval"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.invincibleAlphaInterval</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>37</ID>
+              <Description>"obstacleEscapeSpeed"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameSettings</Address>
+              <Offsets>
+                <Offset>GameSettingsOffs.obstacleEscapeSpeed</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>22</ID>
+          <Description>"关卡设置"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pStageSettings = pGameManager + GameManagerOffs.stageSettings
+
+StageSettingsOffs = mono_getClassFieldOffsets("ClimbGames.AssKnight", "StageSettings")
+StageSceneAssetOffs = mono_getClassFieldOffsets("ClimbGames.AssKnight", "StageSceneAsset")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pStageSettings = nil
+
+StageSettingsOffs = nil
+StageSceneAssetOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>23</ID>
+              <Description>"rewardSceneScore"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pStageSettings</Address>
+              <Offsets>
+                <Offset>StageSceneAssetOffs.rewardSceneScore</Offset>
+                <Offset>StageSettingsOffs.sceneAsset</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>24</ID>
+              <Description>"isMiniRewardScene"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pStageSettings</Address>
+              <Offsets>
+                <Offset>StageSceneAssetOffs.isMiniRewardScene</Offset>
+                <Offset>StageSettingsOffs.sceneAsset</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>25</ID>
+              <Description>"easyDamageMultiplier"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pStageSettings</Address>
+              <Offsets>
+                <Offset>StageSceneAssetOffs.easyDamageMultiplier</Offset>
+                <Offset>StageSettingsOffs.sceneAsset</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26</ID>
+              <Description>"easyKillScoreMultiplier"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pStageSettings</Address>
+              <Offsets>
+                <Offset>StageSceneAssetOffs.easyKillScoreMultiplier</Offset>
+                <Offset>StageSettingsOffs.sceneAsset</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"关卡数据（每次需重新启用）"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local instance = mono_getClassInstance("ClimbGames.AssKnight", "StageScene")
+if not instance then return end
+
+pPlayerHP = instance + StageSceneOffs.playerHP
+pPlayerController = instance + StageSceneOffs.playerController
+pPlayerWeapon = instance + StageSceneOffs.playerWeapon
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pPlayerHP = nil
+pPlayerController = nil
+pPlayerWeapon = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"Player HP"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>3</ID>
+                  <Description>"maxHP"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerHP</Address>
+                  <Offsets>
+                    <Offset>PlayerHPOffs.maxHP</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>4</ID>
+                  <Description>"currentHP"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerHP</Address>
+                  <Offsets>
+                    <Offset>PlayerHPOffs.currentHP</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>5</ID>
+                  <Description>"isDebugInvincible"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>pPlayerHP</Address>
+                  <Offsets>
+                    <Offset>PlayerHPOffs.isDebugInvincible</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>6</ID>
+                  <Description>"isInvincible"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>pPlayerHP</Address>
+                  <Offsets>
+                    <Offset>PlayerHPOffs.isInvincible</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>7</ID>
+                  <Description>"isNoHit"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>pPlayerHP</Address>
+                  <Offsets>
+                    <Offset>PlayerHPOffs.isNoHit</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>9</ID>
+              <Description>"Player Weapon"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>10</ID>
+                  <Description>"maxAttackLevel"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pPlayerWeapon</Address>
+                  <Offsets>
+                    <Offset>WeaponOffs.maxAttackLevel</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>11</ID>
+                  <Description>"attackLevel"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pPlayerWeapon</Address>
+                  <Offsets>
+                    <Offset>WeaponOffs.attackLevel</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>12</ID>
+                  <Description>"boomCount"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pPlayerWeapon</Address>
+                  <Offsets>
+                    <Offset>WeaponOffs.boomCount</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>13</ID>
+              <Description>"Player Controller"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>14</ID>
+                  <Description>"spawnBehaviourTime"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerController</Address>
+                  <Offsets>
+                    <Offset>PlayerControllerOffs.spawnBehaviourTime</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>15</ID>
+                  <Description>"invincibleBehaviourTime"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerController</Address>
+                  <Offsets>
+                    <Offset>PlayerControllerOffs.invincibleBehaviourTime</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>16</ID>
+                  <Description>"invincibleDuration"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerController</Address>
+                  <Offsets>
+                    <Offset>PlayerControllerOffs.invincibleDuration</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>18</ID>
+                  <Description>"fireMovementMultiplier"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerController</Address>
+                  <Offsets>
+                    <Offset>PlayerControllerOffs.fireMovementMultiplier</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>17</ID>
+                  <Description>"spearFireMovementMultiplier"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>pPlayerController</Address>
+                  <Offsets>
+                    <Offset>PlayerControllerOffs.spearFireMovementMultiplier</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>19</ID>
+                  <Description>"score"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pPlayerController</Address>
+                  <Offsets>
+                    <Offset>PlayerControllerOffs.score</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>20</ID>
+                  <Description>"isAutoAttackingMode"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>pPlayerController</Address>
+                  <Offsets>
+                    <Offset>PlayerControllerOffs.isAutoAttackingMode</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>39</ID>
+          <Description>"无敌"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(patch_TakeDamage, PlayerHP:TakeDamage+6a)
+define(patch_FallDie, PlayerHP:FallDie+13)
+
+define(originalBytes, 85 C0 0F 85)
+//test eax,eax
+//jne ...
+
+define(patchBytes, 0F 1F 00 E9)
+// nop 3
+// jmp ...
+
+[ENABLE]
+assert(patch_TakeDamage,originalBytes)
+assert(patch_FallDie,originalBytes)
+
+patch_TakeDamage:
+db patchBytes
+
+patch_FallDie:
+db patchBytes
+
+ 
+ 
+[DISABLE]
+patch_TakeDamage:
+db originalBytes
+
+patch_FallDie:
+db originalBytes
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>42</ID>
+          <Description>"无限炸弹"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(patchAddress, Weapon:StartBoom+1ef)
+define(bytes, FF C8)
+
+[ENABLE]
+assert(patchAddress,bytes)
+
+patchAddress:
+nop 2
+
+
+
+[DISABLE]
+patchAddress:
+db bytes
+//dec eax
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>40</ID>
+          <Description>"移动速度"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Movement2d:Update+188)
+define(bytes, F3 0F 11 AD B4 FE FF FF)
+
+define(patch_je1Address, Movement2d:Update+146)
+define(bytes_je1, 0F B6 80 6C 01 00 00)
+
+define(patch_je2Address, Movement2d:Update+15b)
+define(bytes_je2, 48 8B 40 50 48 63 80 D4 00 00 00)
+
+[ENABLE]
+assert(address, bytes)
+assert(patch_je1Address, bytes_je1)
+assert(patch_je2Address, bytes_je2)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+label(moveSpeed)
+registersymbol(moveSpeed)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+movss xmm5,[moveSpeed]
+movss [rbp-0000014C],xmm5
+
+exit:
+jmp returnhere
+
+moveSpeed:
+dd (float)12.0
+
+
+address:
+jmp newmem
+nop 3
+returnhere:
+
+
+patch_je1Address:
+nop 2
+mov eax,1
+
+patch_je2Address:
+nop
+mov rax,1
+
+
+ 
+[DISABLE]
+unregistersymbol(moveSpeed)
+
+dealloc(newmem)
+address:
+db bytes
+//movss [rbp-0000014C],xmm5
+
+patch_je1Address:
+db bytes_je1
+//movzx eax,byte ptr [rax+0000016C]
+
+patch_je2Address:
+db bytes_je2
+//mov rax,[rax+50]
+//movsxd  rax,dword ptr [rax+000000D4]
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>41</ID>
+              <Description>"moveSpeed"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>moveSpeed</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassInstance(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    else
+        namespace = mono_class_getNamespace(classID)
+    end
+
+    local instance = mono_class_findInstancesOfClassListOnly(namespace, classID)
+    if not instance or #instance == 0 then
+        return nil
+    end
+    return instance[1]
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local name = fields[i].name
+        name = string.gsub(name, "&lt;", "")
+        name = string.gsub(name, "&gt;k__BackingField", "")
+
+        t[name] = fields[i].offset
+    end
+    return t
+end
+
+</LuaScript>
+</CheatTable>
