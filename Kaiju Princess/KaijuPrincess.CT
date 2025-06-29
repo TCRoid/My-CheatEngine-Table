@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 Kaiju Princess v1.091"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("KaijuPrincess.exe", true) then return end
+
+GameManager = mono_getClassStaticFields("", "GameManager")
+if not GameManager then return end
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+GameManager = nil
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>23</ID>
+          <Description>"状态"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"好感度"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Favorability</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"心情"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Emotion</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"下回合提升心情"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.NextTurnEmotion</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"饱食度"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Hungry</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"目前破坏业绩"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Violet</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>9</ID>
+              <Description>"目标破坏业绩"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Target_Violet</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>10</ID>
+              <Description>"期限"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Deadline</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11</ID>
+              <Description>"行动值"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.ActionPoint</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"最大行动值"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.MaxActionPoint</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>13</ID>
+              <Description>"天数"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Turn</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>14</ID>
+              <Description>"清洁度"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Clean</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>3</ID>
+              <Description>"金钱"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Money</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>15</ID>
+              <Description>"Contribution"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Contribution</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>16</ID>
+              <Description>"BattleCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.BattleCount</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>17</ID>
+              <Description>"Days"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Days</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>18</ID>
+              <Description>"能力加成 体力"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.H_Strength</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>19</ID>
+              <Description>"能力加成 精力"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.H_Energy</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>20</ID>
+              <Description>"累积推倒次数"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.H_Count</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>21</ID>
+              <Description>"Violet_Count"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>GameManager.Violet_Count</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>46</ID>
+          <Description>"记录"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local count, itemStart = mono_getListItemStart(GameManager.AchievementDatas)
+if not count or count == 0 then
+    return
+end
+
+AchievementDatas = {}
+
+local entry = itemStart
+for i = 1, count, 1 do
+    AchievementDatas[i - 1] = entry
+
+    entry = entry + 0x4
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+AchievementDatas = nil
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>47</ID>
+              <Description>"totlaMClimaxCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[0]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>48</ID>
+              <Description>"totlaBClimaxCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[1]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>49</ID>
+              <Description>"totlaCClimaxCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[2]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>50</ID>
+              <Description>"totlaVClimaxCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[3]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>51</ID>
+              <Description>"KissCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[5]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>52</ID>
+              <Description>"CumInPussyCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[13]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>53</ID>
+              <Description>"CumInPussySemenml"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[14]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>54</ID>
+              <Description>"DoubleClimaxCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[9]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>55</ID>
+              <Description>"TripleClimaxCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[10]</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>56</ID>
+              <Description>"QuadrupleClimaxCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>AchievementDatas[11]</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>58</ID>
+          <Description>"恢复状态（心情、饱食度、清洁度、行动值）"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+writeInteger(GameManager.Emotion, 100)
+writeInteger(GameManager.Hungry, 100)
+writeInteger(GameManager.Clean, 100)
+writeInteger(GameManager.ActionPoint, 9)
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>57</ID>
+          <Description>"H 经验满级"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local ExpManagerOffs = mono_getClassFieldOffsets("", "ExpManager")
+
+local expNames = {
+    "Mouth", "Breast", "Clitoris", "Vagina", "Lubricating"
+}
+for _, expName in pairs(expNames) do
+    local pExpManager = readPointer(GameManager[expName])
+    if pExpManager ~= 0 then
+        local maxExp = readInteger(pExpManager + ExpManagerOffs.MaxExp)
+        local maxLv = readInteger(pExpManager + ExpManagerOffs.MaxLv)
+
+        if maxExp &gt; 0 and maxLv &gt; 0 then
+            writeInteger(pExpManager + ExpManagerOffs._exp, maxExp)
+            writeInteger(pExpManager + ExpManagerOffs._Lv, maxLv)
+            writeInteger(pExpManager + ExpManagerOffs.StartLv, maxLv)
+        end
+    end
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>24</ID>
+          <Description>"H 模式（每次需重新启用）"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local classID = mono_findClass("", "HModeManager")
+local HModeManager = mono_getClassStaticFields(classID)
+if not HModeManager then return end
+
+pHModeManager = HModeManager.instance
+HModeManagerOffs = mono_getClassFieldOffsets(classID)
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pHModeManager = nil
+HModeManagerOffs = nil
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>25</ID>
+              <Description>"Strength"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.Strength</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26</ID>
+              <Description>"HAP"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.HAP</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27</ID>
+              <Description>"Cum"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.Cum</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28</ID>
+              <Description>"Energy"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.Energy</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>29</ID>
+              <Description>"isPanty"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.isPanty</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>30</ID>
+              <Description>"MBuff"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.MBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>31</ID>
+              <Description>"BBuff"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.BBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>32</ID>
+              <Description>"CBuff"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.CBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>33</ID>
+              <Description>"VBuff"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.VBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>34</ID>
+              <Description>"CumBuff"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.CumBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>35</ID>
+              <Description>"isTest"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.isTest</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>36</ID>
+              <Description>"Lock"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.Lock</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>37</ID>
+              <Description>"XRay"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:否
+1:是
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pHModeManager</Address>
+              <Offsets>
+                <Offset>HModeManagerOffs.XRay</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>62</ID>
+          <Description>"出击"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>61</ID>
+              <Description>"一击摧毁"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>define(address, BattleManager:AttackTown+4b3)
+define(bytes, 2B CE 89 48 34)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov esi,ecx
+
+originalcode:
+sub ecx,esi
+mov [rax+34],ecx
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+returnhere:
+
+ 
+ 
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//sub ecx,esi
+//mov [rax+34],ecx
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>63</ID>
+              <Description>"所有城镇"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local classID = mono_findClass("", "BattleManager")
+local BattleManager = mono_getClassStaticFields(classID)
+if not BattleManager then return end
+
+pBattleManager = BattleManager.instance
+BattleManagerOffs = mono_getClassFieldOffsets(classID)
+
+StageOffs = mono_getClassFieldOffsets("", "Stage")
+
+pBattleManager__stages = readPointer(pBattleManager) + BattleManagerOffs.stages
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pBattleManager = nil
+BattleManagerOffs = nil
+StageOffs = nil
+pBattleManager__stages = nil
+
+{$ASM}
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>64</ID>
+                  <Description>"恢复"</Description>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local count, itemStart = mono_getListItemStart(pBattleManager__stages)
+if not count or count == 0 then
+    return
+end
+
+local entry = itemStart
+for _ = 1, count, 1 do
+    local pStage = readPointer(entry)
+    writeInteger(pStage + StageOffs.Stable, 100000)
+    writeByte(pStage + StageOffs.isBreak, 0)
+    entry = entry + 0x8 -- object
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>65</ID>
+                  <Description>"熟悉度100%"</Description>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local count, itemStart = mono_getListItemStart(pBattleManager__stages)
+if not count or count == 0 then
+    return
+end
+
+local entry = itemStart
+for _ = 1, count, 1 do
+    local pStage = readPointer(entry)
+    writeInteger(pStage + StageOffs.Known, 100)
+    entry = entry + 0x8 -- object
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>59</ID>
+          <Description>"临时解锁"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"事件（重新打开回忆界面）"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>define(address, EventManager:ConditionCheck+5a8)
+define(bytes, 48 8B C6 48 8B 75 E0)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov rsi,1
+
+originalcode:
+mov rax,rsi
+mov rsi,[rbp-20]
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//mov rax,rsi
+//mov rsi,[rbp-20]
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>60</ID>
+              <Description>"CG（重新打开回忆界面）"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>define(patchAddress1, EventView:Set+31)
+define(patchAddress2, EventCGControl:Set+127)
+
+define(bytes, 0F B6 80 E9 00 00 00)
+//movzx eax,byte ptr [rax+000000E9]
+
+define(patchBytes, B8 01 00 00 00 90 90)
+//mov eax,1
+//nop nop
+
+[ENABLE]
+assert(patchAddress1,bytes)
+assert(patchAddress2,bytes)
+
+patchAddress1:
+db patchBytes
+
+patchAddress2:
+db patchBytes
+
+
+
+[DISABLE]
+patchAddress1:
+db bytes
+
+patchAddress2:
+db bytes
+
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>45</ID>
+              <Description>"服装（重新打开更衣界面）"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>define(patchAddress1, ClothesManager:SetClothes+151)
+define(patchAddress2, ClothesManager:SetClothes+4f9)
+
+define(bytes, 0F B6 46 58)
+//movzx eax,byte ptr [rsi+58]
+
+define(patchBytes, B0 01 90 90)
+//mov al,1
+//nop nop
+
+[ENABLE]
+assert(patchAddress1,bytes)
+assert(patchAddress2,bytes)
+
+patchAddress1:
+db patchBytes
+
+patchAddress2:
+db patchBytes
+
+ 
+ 
+[DISABLE]
+patchAddress1:
+db bytes
+
+patchAddress2:
+db bytes
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassStaticFields(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    local staticBaseAddress = mono_class_getStaticFieldAddress(domain, classID)
+
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local field = fields[i]
+        if field.isStatic then
+            t[field.name] = staticBaseAddress + field.offset
+        end
+    end
+    return t
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        t[fields[i].name] = fields[i].offset
+    end
+    return t
+end
+
+function mono_getListItemStart(listPtr)
+    local object = readPointer(listPtr)
+    local size = readInteger(object + 0x18)
+    local items = readPointer(object + 0x10)
+    return size, items + 0x20
+end
+
+</LuaScript>
+</CheatTable>
