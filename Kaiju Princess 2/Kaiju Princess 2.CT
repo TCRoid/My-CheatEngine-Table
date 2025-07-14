@@ -3,22 +3,27 @@
   <CheatEntries>
     <CheatEntry>
       <ID>0</ID>
+      <Description>"适用于 Kaiju Princess 2 v1.09"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
       <Description>"初始化"</Description>
       <Options moHideChildren="1"/>
       <Color>FF0000</Color>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 {$LUA}
-if not OpenGameProcess("Kaiju Princess 2.exe", true) then
-    return
-end
+if syntaxcheck then return end
+if not OpenGameProcess("Kaiju Princess 2.exe", true) then return end
 
 local classID = mono_findClass("", "PlayerData")
-local baseAddress = mono_getClassStaticFieldAddress(classID)
-if not baseAddress then return end
+local PlayerData = mono_getClassStaticFields(classID)
+pPlayerData = PlayerData.m_Instance
+if readPointer(pPlayerData) == 0 then return end
 
 PlayerDataOffs = mono_getClassFieldOffsets(classID)
-pPlayerData = baseAddress + PlayerDataOffs.m_Instance
 
 {$ASM}
 
@@ -26,16 +31,18 @@ pPlayerData = baseAddress + PlayerDataOffs.m_Instance
 
 [DISABLE]
 {$LUA}
+if syntaxcheck then return end
+
 pPlayerData = nil
 PlayerDataOffs = nil
-
 {$ASM}
+
 </AssemblerScript>
       <CheatEntries>
         <CheatEntry>
-          <ID>2</ID>
+          <ID>3</ID>
           <Description>"天数"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
+          <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>pPlayerData</Address>
           <Offsets>
@@ -48,33 +55,52 @@ PlayerDataOffs = nil
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 {$LUA}
+if syntaxcheck then return end
+
 pItemDictionary = readPointer(pPlayerData) + PlayerDataOffs._itemDictionary
 
-CreateListViewForm("物品编辑")
+if not ListViewForm then
+    ListViewForm = CreateListViewForm("物品编辑")
+else
+    ListViewForm.bringToFront()
+end
+
 {$ASM}
 
 
 
 [DISABLE]
 {$LUA}
+if syntaxcheck then return end
+
 pItemDictionary = nil
+
+if ListViewForm then
+    ListViewForm.destroy()
+    ListViewForm = nil
+end
 
 {$ASM}
 
 </AssemblerScript>
         </CheatEntry>
         <CheatEntry>
-          <ID>8</ID>
+          <ID>5</ID>
           <Description>"临时解锁回忆（重新打开回忆界面）"</Description>
           <Options moHideChildren="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
-              <ID>7</ID>
+              <ID>6</ID>
               <Description>"全部事件"</Description>
               <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
-alloc(newmem,2048,EventSItem:SetItemLock+1cd) 
+              <AssemblerScript>define(address, EventSItem:SetItemLock+1cd)
+define(bytes, 0F B6 56 72 48 8B C8)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(newmem,2048,address)
 label(returnhere)
 label(originalcode)
 label(exit)
@@ -89,28 +115,37 @@ mov rcx,rax
 exit:
 jmp returnhere
 
-EventSItem:SetItemLock+1cd:
+address:
 jmp newmem
 nop 2
 returnhere:
 
 
- 
- 
+
+
 [DISABLE]
 dealloc(newmem)
-EventSItem:SetItemLock+1cd:
-db 0F B6 56 72 48 8B C8
+address:
+db bytes
 //movzx edx,byte ptr [rsi+72]
 //mov rcx,rax
 </AssemblerScript>
             </CheatEntry>
             <CheatEntry>
-              <ID>9</ID>
+              <ID>7</ID>
               <Description>"全部CG"</Description>
               <VariableType>Auto Assembler Script</VariableType>
-              <AssemblerScript>[ENABLE]
-alloc(newmem,2048,CGGroupSItem:SetItemLock+137) 
+              <AssemblerScript>define(address1, CGGroupSItem:SetItemLock+137)
+define(address2, CGGroupSItem:CGUnlockMeet+ef)
+
+define(bytes1, 0F B6 56 58 48 8B C8)
+define(bytes2, 33 C0 4C 0F B6 F8)
+
+[ENABLE]
+assert(address1,bytes1)
+assert(address2,bytes2)
+
+alloc(newmem,2048,address1)
 label(returnhere)
 label(originalcode)
 label(exit)
@@ -125,29 +160,29 @@ mov rcx,rax
 exit:
 jmp returnhere
 
-CGGroupSItem:SetItemLock+137:
+address1:
 jmp newmem
 nop 2
 returnhere:
 
 
 
-CGGroupSItem:CGUnlockMeet+ef:
+address2:
 nop 6
 
- 
- 
+
+
 [DISABLE]
 dealloc(newmem)
-CGGroupSItem:SetItemLock+137:
-db 0F B6 56 58 48 8B C8
+address1:
+db bytes1
 //movzx edx,byte ptr [rsi+58]
 //mov rcx,rax
 
 
 
-CGGroupSItem:CGUnlockMeet+ef:
-db 33 C0 4C 0F B6 F8
+address2:
+db bytes2
 // xor eax eax
 // movzx r15,al
 
@@ -156,22 +191,84 @@ db 33 C0 4C 0F B6 F8
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
-          <ID>5</ID>
+          <ID>9</ID>
+          <Description>"临时解锁服装（重新打开更衣界面）"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address1, DressExcelManager:isDressUnlock+111)
+define(address2, DressSItem:SetItemLock+5e)
+
+define(bytes1, 48 8B 75 F8 48 8D 65 00)
+define(bytes2, 40 0F 9C C0)
+
+[ENABLE]
+assert(address1,bytes1)
+assert(address2,bytes2)
+
+alloc(newmem,2048,address1)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov eax,1
+
+originalcode:
+mov rsi,[rbp-08]
+lea rsp,[rbp+00]
+
+exit:
+jmp returnhere
+
+address1:
+jmp newmem
+nop 3
+returnhere:
+
+
+address2:
+mov al,0
+nop 2
+
+
+
+[DISABLE]
+dealloc(newmem)
+address1:
+db bytes1
+//mov rsi,[rbp-08]
+//lea rsp,[rbp+00]
+
+
+address2:
+db bytes2
+//setl al
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
           <Description>"打开作弊界面（在设置界面启用）"</Description>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 {$LUA}
-local classID = mono_findClass("", "MainUIManager")
-local baseAddr = mono_getClassStaticFieldAddress(classID)
-local MainUIManagerOffs = mono_getClassFieldOffsets(classID)
-local pMainUIManager = readPointer(baseAddr + MainUIManagerOffs.m_instance)
-if pMainUIManager == 0 then return end
+if syntaxcheck then return end
 
-local currentPopup = readPointer(pMainUIManager + MainUIManagerOffs.currentPopup)
+local classID = mono_findClass("", "MainUIManager")
+local MainUIManager = mono_getClassStaticFields(classID)
+local MainUIManagerOffs = mono_getClassFieldOffsets(classID)
+
+local addrMainUIManager = readPointer(MainUIManager.m_instance)
+if addrMainUIManager == 0 then return end
+
+local currentPopup = readPointer(addrMainUIManager + MainUIManagerOffs.currentPopup)
 if currentPopup == 0 then return end
 
 local instance = currentPopup
 local methodId = mono_findMethod("", "UI_SettingPopup", "OpenCheat")
+if not methodId or methodId == 0 then
+    showMessage("Not found method!")
+    return
+end
 mono_invoke_method("", methodId, instance, {})
 
 {$ASM}
@@ -186,7 +283,31 @@ mono_invoke_method("", methodId, instance, {})
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
-  <LuaScript>function OpenGameProcess(processName, enableMono)
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
     local pid = getProcessIDFromProcessName(processName)
     if not pid then
         showMessage("先启动游戏，然后重新开启此选项")
@@ -223,7 +344,7 @@ function mono_getClassFieldOffsets(classId_or_namespace, className)
     return t
 end
 
-function mono_getClassStaticFieldAddress(classId_or_namespace, className)
+function mono_getClassStaticFields(classId_or_namespace, className)
     local classID = classId_or_namespace
     local namespace = classId_or_namespace
     if className then
@@ -236,7 +357,22 @@ function mono_getClassStaticFieldAddress(classId_or_namespace, className)
     end
 
     local domain = mono_enumDomains()[1]
-    return mono_class_getStaticFieldAddress(domain, classID)
+    local staticBaseAddress = mono_class_getStaticFieldAddress(domain, classID)
+
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local field = fields[i]
+        if field.isStatic then
+            t[field.name] = staticBaseAddress + field.offset
+        end
+    end
+    return t
 end
 
 function mono_readString(stringPtr)
@@ -247,31 +383,239 @@ function mono_getDictionaryEntryStart(dictionaryPtr)
     local object = readPointer(dictionaryPtr)
     local count = readInteger(object + 0x40)
     local entries = readPointer(object + 0x18)
-    return count, entries + 0x20
+    return count, entries + 0x20 -- object
 end
 
 function CreateListViewForm(title)
-    -- 创建主窗口
-    local mainForm = createForm()
+    -- 主窗口
+    local mainForm = createForm(false)
+    mainForm.Caption = title .. "（双击项目修改数值）"
     mainForm.Width = 800
     mainForm.Height = 800
-    mainForm.Caption = title .. "（双击项目修改数值）"
+    mainForm.AutoScroll = true
     mainForm.centerScreen()
+    mainForm.ChildSizing.LeftRightSpacing = 16
+    mainForm.ChildSizing.TopBottomSpacing = 16
 
-    -- 按钮
-    local button = createButton(mainForm)
-    button.Caption = "刷新数据"
-    button.Top = 16
-    button.Height = 50
-    button.Left = 24
-    button.Width = mainForm.Width - button.Left * 2
+    --------------------------------
+    -- 筛选名称面板
+    --------------------------------
 
+    local filterNamePanel = createPanel(mainForm)
+    filterNamePanel.BevelInner = 0 -- bvNone
+    filterNamePanel.BevelOuter = 0 -- bvNone
+    filterNamePanel.AutoSize = true
+    filterNamePanel.Anchors = "[akLeft,akTop,akRight]"
+
+    filterNamePanel.AnchorSideTop.Control = mainForm
+    filterNamePanel.AnchorSideTop.Side = asrTop
+    filterNamePanel.BorderSpacing.Top = 0
+
+    filterNamePanel.AnchorSideLeft.Control = mainForm
+    filterNamePanel.AnchorSideLeft.Side = asrTop
+    filterNamePanel.BorderSpacing.Left = 24
+
+    filterNamePanel.AnchorSideRight.Control = mainForm
+    filterNamePanel.AnchorSideRight.Side = asrBottom
+    filterNamePanel.BorderSpacing.Right = 24
+
+    -- 启用筛选名称 选择框
+    local filterNameCheckBox = createCheckBox(filterNamePanel)
+    filterNameCheckBox.Caption = "筛选名称"
+    filterNameCheckBox.AutoSize = true
+    filterNameCheckBox.Anchors = "[akLeft,akTop]"
+
+    filterNameCheckBox.AnchorSideTop.Control = filterNamePanel
+    filterNameCheckBox.AnchorSideTop.Side = asrCenter
+    filterNameCheckBox.BorderSpacing.Top = 0
+
+    filterNameCheckBox.AnchorSideLeft.Control = filterNamePanel
+    filterNameCheckBox.AnchorSideLeft.Side = asrTop
+    filterNameCheckBox.BorderSpacing.Left = 0
+
+    -- 名称 输入框
+    local filterNameEdit = createEdit(filterNamePanel)
+    filterNameEdit.TextHint = "输入要搜索的名称"
+    filterNameEdit.Constraints.MinWidth = 200
+    filterNameEdit.Anchors = "[akLeft,akTop]"
+
+    filterNameEdit.AnchorSideTop.Control = filterNamePanel
+    filterNameEdit.AnchorSideTop.Side = asrCenter
+    filterNameEdit.BorderSpacing.Top = 0
+
+    filterNameEdit.AnchorSideLeft.Control = filterNameCheckBox
+    filterNameEdit.AnchorSideLeft.Side = asrBottom
+    filterNameEdit.BorderSpacing.Left = 16
+
+    -- 名称忽略大小写 选择框
+    local ignoreCaseCheckBox = createCheckBox(filterNamePanel)
+    ignoreCaseCheckBox.Caption = "忽略大小写"
+    ignoreCaseCheckBox.AutoSize = true
+    ignoreCaseCheckBox.Anchors = "[akLeft,akTop]"
+
+    ignoreCaseCheckBox.AnchorSideTop.Control = filterNamePanel
+    ignoreCaseCheckBox.AnchorSideTop.Side = asrCenter
+    ignoreCaseCheckBox.BorderSpacing.Top = 0
+
+    ignoreCaseCheckBox.AnchorSideLeft.Control = filterNameEdit
+    ignoreCaseCheckBox.AnchorSideLeft.Side = asrBottom
+    ignoreCaseCheckBox.BorderSpacing.Left = 16
+
+    -- 名称完全匹配 选择框
+    local fullMatchCheckBox = createCheckBox(filterNamePanel)
+    fullMatchCheckBox.Caption = "完全匹配"
+    fullMatchCheckBox.AutoSize = true
+    fullMatchCheckBox.Anchors = "[akLeft,akTop]"
+
+    fullMatchCheckBox.AnchorSideTop.Control = filterNamePanel
+    fullMatchCheckBox.AnchorSideTop.Side = asrCenter
+    fullMatchCheckBox.BorderSpacing.Top = 0
+
+    fullMatchCheckBox.AnchorSideLeft.Control = ignoreCaseCheckBox
+    fullMatchCheckBox.AnchorSideLeft.Side = asrBottom
+    fullMatchCheckBox.BorderSpacing.Left = 8
+
+    --------------------------------
+    -- 筛选数值面板
+    --------------------------------
+
+    local filterValuePanel = createPanel(mainForm)
+    filterValuePanel.BevelInner = 0 -- bvNone
+    filterValuePanel.BevelOuter = 0 -- bvNone
+    filterValuePanel.AutoSize = true
+    filterValuePanel.Anchors = "[akLeft,akTop,akRight]"
+
+    filterValuePanel.AnchorSideTop.Control = filterNamePanel
+    filterValuePanel.AnchorSideTop.Side = asrBottom
+    filterValuePanel.BorderSpacing.Top = 8
+
+    filterValuePanel.AnchorSideLeft.Control = mainForm
+    filterValuePanel.AnchorSideLeft.Side = asrTop
+    filterValuePanel.BorderSpacing.Left = 24
+
+    filterValuePanel.AnchorSideRight.Control = mainForm
+    filterValuePanel.AnchorSideRight.Side = asrBottom
+    filterValuePanel.BorderSpacing.Right = 24
+
+    -- 启用筛选数值 选择框
+    local filterValueCheckBox = createCheckBox(filterValuePanel)
+    filterValueCheckBox.Caption = "筛选数值"
+    filterValueCheckBox.AutoSize = true
+    filterValueCheckBox.Anchors = "[akLeft,akTop]"
+
+    filterValueCheckBox.AnchorSideTop.Control = filterValuePanel
+    filterValueCheckBox.AnchorSideTop.Side = asrCenter
+    filterValueCheckBox.BorderSpacing.Top = 0
+
+    filterValueCheckBox.AnchorSideLeft.Control = filterValuePanel
+    filterValueCheckBox.AnchorSideLeft.Side = asrTop
+    filterValueCheckBox.BorderSpacing.Left = 0
+
+    -- 数值 输入框
+    local filterValueEdit = createEdit(filterValuePanel)
+    filterValueEdit.TextHint = "输入要搜索的数值"
+    filterValueEdit.Constraints.MinWidth = 200
+    filterValueEdit.Anchors = "[akLeft,akTop]"
+
+    filterValueEdit.AnchorSideTop.Control = filterValuePanel
+    filterValueEdit.AnchorSideTop.Side = asrCenter
+    filterValueEdit.BorderSpacing.Top = 0
+
+    filterValueEdit.AnchorSideLeft.Control = filterValueCheckBox
+    filterValueEdit.AnchorSideLeft.Side = asrBottom
+    filterValueEdit.BorderSpacing.Left = 16
+
+    -- 数值类型 下拉框
+    local filterValueTypeComboBox = createComboBox(filterValuePanel)
+    filterValueTypeComboBox.AutoSize = true
+    filterValueTypeComboBox.Anchors = "[akLeft,akTop]"
+    filterValueTypeComboBox.Readonly = true
+
+    filterValueTypeComboBox.AnchorSideTop.Control = filterValuePanel
+    filterValueTypeComboBox.AnchorSideTop.Side = asrCenter
+    filterValueTypeComboBox.BorderSpacing.Top = 0
+
+    filterValueTypeComboBox.AnchorSideLeft.Control = filterValueEdit
+    filterValueTypeComboBox.AnchorSideLeft.Side = asrBottom
+    filterValueTypeComboBox.BorderSpacing.Left = 16
+
+    --------------------------------
+    -- 按钮面板
+    --------------------------------
+
+    local buttonPanel = createPanel(mainForm)
+    buttonPanel.BevelInner = 0 -- bvNone
+    buttonPanel.BevelOuter = 0 -- bvNone
+    buttonPanel.AutoSize = true
+    buttonPanel.Anchors = "[akLeft,akTop,akRight]"
+
+    buttonPanel.AnchorSideTop.Control = filterValuePanel
+    buttonPanel.AnchorSideTop.Side = asrBottom
+    buttonPanel.BorderSpacing.Top = 16
+
+    buttonPanel.AnchorSideLeft.Control = mainForm
+    buttonPanel.AnchorSideLeft.Side = asrTop
+    buttonPanel.BorderSpacing.Left = 24
+
+    buttonPanel.AnchorSideRight.Control = mainForm
+    buttonPanel.AnchorSideRight.Side = asrBottom
+    buttonPanel.BorderSpacing.Right = 24
+
+    -- 筛选 开关按钮
+    local filterButton = createToggleBox(buttonPanel)
+    filterButton.Caption = "筛选"
+    filterButton.AutoSize = true
+    filterButton.Constraints.MinHeight = 50
+    filterButton.Anchors = "[akLeft,akTop]"
+
+    filterButton.AnchorSideTop.Control = buttonPanel
+    filterButton.AnchorSideTop.Side = asrCenter
+    filterButton.BorderSpacing.Top = 0
+
+    filterButton.AnchorSideLeft.Control = buttonPanel
+    filterButton.AnchorSideLeft.Side = asrTop
+    filterButton.BorderSpacing.Left = 0
+
+    -- 刷新数据 按钮
+    local refreshButton = createButton(buttonPanel)
+    refreshButton.Caption = "刷新数据"
+    refreshButton.Constraints.MinHeight = 50
+    refreshButton.Anchors = "[akLeft,akTop,akRight]"
+
+    refreshButton.AnchorSideTop.Control = buttonPanel
+    refreshButton.AnchorSideTop.Side = asrCenter
+    refreshButton.BorderSpacing.Top = 0
+
+    refreshButton.AnchorSideLeft.Control = filterButton
+    refreshButton.AnchorSideLeft.Side = asrBottom
+    refreshButton.BorderSpacing.Left = 16
+
+    refreshButton.AnchorSideRight.Control = buttonPanel
+    refreshButton.AnchorSideRight.Side = asrBottom
+    refreshButton.BorderSpacing.Right = 24
+
+    --------------------------------
     -- 列表
+    --------------------------------
+
     local listView = createListView(mainForm)
-    listView.Left = 16
-    listView.Top = button.Top + button.Height + 20
-    listView.Width = mainForm.Width - listView.Left * 2
-    listView.Height = mainForm.Height - listView.Top - 20
+    listView.Anchors = "[akLeft,akTop,akRight,akBottom]"
+
+    listView.AnchorSideTop.Control = buttonPanel
+    listView.AnchorSideTop.Side = asrBottom
+    listView.BorderSpacing.Top = 24
+
+    listView.AnchorSideLeft.Control = mainForm
+    listView.AnchorSideLeft.Side = asrTop
+    listView.BorderSpacing.Left = 0
+
+    listView.AnchorSideRight.Control = mainForm
+    listView.AnchorSideRight.Side = asrBottom
+    listView.BorderSpacing.Right = 0
+
+    listView.AnchorSideBottom.Control = mainForm
+    listView.AnchorSideBottom.Side = asrBottom
+    listView.BorderSpacing.Bottom = 0
 
     listView.ReadOnly = true
     listView.RowSelect = true
@@ -288,7 +632,47 @@ function CreateListViewForm(title)
     listView.Columns[2].Width = 150
     listView.Columns[2].Caption = "数值"
 
-    ----------------------------------------
+    ------------------------------------------------
+    -- 筛选绑定事件
+    ------------------------------------------------
+
+    filterNamePanel.Visible = false
+    filterNameEdit.Enabled = false
+    ignoreCaseCheckBox.Enabled = false
+    fullMatchCheckBox.Enabled = false
+
+    filterValuePanel.Visible = false
+    filterValueEdit.Enabled = false
+    filterValueTypeComboBox.Enabled = false
+
+    for _, value in pairs({ "= 等于", "&gt; 大于", "&lt; 小于", "!= 不等于" }) do
+        filterValueTypeComboBox.Items.add(value)
+    end
+    filterValueTypeComboBox.ItemIndex = 0
+
+
+    -- 筛选开关 按钮点击事件
+    filterButton.OnClick = function(sender)
+        filterNamePanel.Visible = sender.Checked
+        filterValuePanel.Visible = sender.Checked
+    end
+
+    -- 启用筛选名称 选择框变化事件
+    filterNameCheckBox.OnChange = function(sender)
+        filterNameEdit.Enabled = sender.Checked
+        ignoreCaseCheckBox.Enabled = sender.Checked
+        fullMatchCheckBox.Enabled = sender.Checked
+    end
+
+    -- 启用筛选数值 选择框变化事件
+    filterValueCheckBox.OnChange = function(sender)
+        filterValueEdit.Enabled = sender.Checked
+        filterValueTypeComboBox.Enabled = sender.Checked
+    end
+
+    ------------------------------------------------
+    -- 列表绑定事件
+    ------------------------------------------------
 
     -- 每个列表项的数据
     local listItemsData = {}
@@ -300,14 +684,31 @@ function CreateListViewForm(title)
         return listItemsData[curItem.Index]
     end
 
-    -- 按钮点击事件
-    button.OnClick = function(sender)
+    -- 刷新数据 按钮点击事件
+    refreshButton.OnClick = function(sender)
         listView.beginUpdate()
-        listItemsData = RefreshListViewData(listView)
+
+        -- 筛选选项
+        local filterOptions = {}
+        if filterNameCheckBox.Checked then
+            filterOptions.Name = {
+                content = filterNameEdit.Text,
+                ignoreCase = ignoreCaseCheckBox.Checked,
+                fullMatch = fullMatchCheckBox.Checked
+            }
+        end
+        if filterValueCheckBox.Checked then
+            filterOptions.Value = {
+                content = filterValueEdit.Text,
+                valueType = filterValueTypeComboBox.ItemIndex
+            }
+        end
+
+        listItemsData = RefreshListViewData(listView, filterOptions)
         listView.endUpdate()
     end
 
-    -- 列表项双击事件
+    -- 列表项 双击事件
     listView.OnDblClick = function(sender)
         local curItem = listView.Selected
         if not curItem then return end
@@ -324,12 +725,18 @@ function CreateListViewForm(title)
             return
         end
 
+        local success = false
         if itemData.type == "int" then
-            writeInteger(itemData.address, value)
+            success = writeInteger(itemData.address, value)
         elseif itemData.type == "float" then
-            writeFloat(itemData.address, value)
+            success = writeFloat(itemData.address, value)
         else
             showMessage("数值类型错误！")
+            return
+        end
+
+        if not success then
+            showMessage("数值写入失败！")
             return
         end
 
@@ -337,9 +744,10 @@ function CreateListViewForm(title)
         listItemsData[curItem.Index].value = value
     end
 
-    ----------------------------------------
+    ------------------------------------------------
+    -- 列表右键弹出菜单
+    ------------------------------------------------
 
-    -- 创建弹出菜单
     local popupMenu = createPopupMenu(listView)
 
     local menuItem1 = createMenuItem(popupMenu)
@@ -366,47 +774,114 @@ function CreateListViewForm(title)
         local itemData = getSelectItemData()
         if not itemData then return end
 
-        local record = AddressList.createMemoryRecord()
-
+        local recordType
         if itemData.type == "int" then
-            record.Type = vtDword
+            recordType = vtDword
         elseif itemData.type == "float" then
-            record.Type = vtSingle
-        else
-            return
+            recordType = vtSingle
         end
 
+        if not recordType then return end
+
+        local record = AddressList.createMemoryRecord()
+        record.Type = recordType
         record.Address = itemData.address
         record.Description = itemData.name
         record.DontSave = true
+        record.ShowAsSigned = true
     end
     popupMenu.Items.add(menuItem3)
 
     -- 绑定弹出菜单到列表
     listView.PopupMenu = popupMenu
 
+    ------------------------------------------------
+
+    mainForm.show()
     return mainForm
 end
 
-function RefreshListViewData(listView)
+function RefreshListViewData(listView, filterOptions)
     local listItems = listView.Items
     local listItemsData = {}
 
-    local function createListItem(address, name)
-        local item = listItems.add()
+    local function isMatch(name, value)
+        if filterOptions.Name then
+            local content = filterOptions.Name.content
+            if filterOptions.Name.ignoreCase then
+                name = string.lower(name)
+                content = string.lower(content)
+            end
+            if filterOptions.Name.fullMatch then
+                if name ~= content then
+                    return false
+                end
+            else
+                if not string.find(name, content) then
+                    return false
+                end
+            end
+        end
 
+        if filterOptions.Value then
+            local content = filterOptions.Value.content
+            local valueType = filterOptions.Value.valueType
+            if valueType == -1 then
+                valueType = 0
+            end
+
+            content = tonumber(content)
+            value = tonumber(value)
+            if not content or not value then
+                return false
+            end
+
+            if valueType == 0 and not (value == content) then
+                return false
+            end
+            if valueType == 1 and not (value &gt; content) then
+                return false
+            end
+            if valueType == 2 and not (value &lt; content) then
+                return false
+            end
+            if valueType == 3 and not (value ~= content) then
+                return false
+            end
+        end
+
+        return true
+    end
+
+    local function createListItem(address, name, vtype)
+        local value
+        if vtype == "int" then
+            value = readInteger(address)
+            if value and value &gt;= 0x80000000 then -- uint to int
+                value = value - 0x100000000
+            end
+        elseif vtype == "float" then
+            value = readFloat(address)
+        end
+
+        name = tostring(name)
+        value = tostring(value)
+
+        if not isMatch(name, value) then
+            return
+        end
+
+        local item = listItems.add()
         item.Caption = string.format("%X", address)
 
         item.SubItems.add(name)
-
-        local value = readInteger(address)
         item.SubItems.add(value)
 
         listItemsData[item.Index] = {
             address = address,
             name = name,
             value = value,
-            type = "int"
+            type = vtype
         }
     end
 
@@ -424,7 +899,7 @@ function RefreshListViewData(listView)
         local name = mono_readString(entry + 0x8)
 
         local pItemDBEntity = readPointer(entry + 0x10)
-        createListItem(pItemDBEntity + 0x18, name)
+        createListItem(pItemDBEntity + 0x18, name, "int")
 
         entry = entry + 0x18
     end
