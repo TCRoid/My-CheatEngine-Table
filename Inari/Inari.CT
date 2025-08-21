@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 Inari v1.5.12"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("Inari.exe", true) then return end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>6</ID>
+          <Description>"无限AP、体力、金钱、精力"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(UseAddress, Inari.PlayScene.Cost.CostBase:Use+46)
+define(UseBytes, 48 63 48 14 2B CE 89 48 14)
+//movsxd rcx,dword ptr [rax+14]
+//sub ecx,esi
+//mov [rax+14],ecx
+
+define(GainAddress, Inari.PlayScene.Cost.CostBase:Gain+27)
+define(GainBytes, 48 63 48 14 03 4D F0 89 48 14)
+//movsxd rcx,dword ptr [rax+14]
+//add ecx,[rbp-10]
+//mov [rax+14],ecx
+
+define(VitalityUseAddress, Inari.PlayScene.Cost.Vitality:Use+2b)
+define(VitalityUseBytes, 85 C0 74 0A)
+//test eax,eax
+//je Inari.PlayScene.Cost.Vitality:Use+39
+
+define(amount, 5F5E0FF) //99999999
+
+[ENABLE]
+assert(UseAddress,UseBytes)
+assert(GainAddress,GainBytes)
+assert(VitalityUseAddress,VitalityUseBytes)
+
+UseAddress:
+mov [rax+14],amount //C7 40 14 XXXXXXXX
+nop 2
+
+GainAddress:
+mov [rax+14],amount //C7 40 14 XXXXXXXX
+nop 3
+
+VitalityUseAddress:
+nop 4
+
+
+
+[DISABLE]
+UseAddress:
+db UseBytes
+
+GainAddress:
+db GainBytes
+
+VitalityUseAddress:
+db VitalityUseBytes
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>7</ID>
+          <Description>"满好感度"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Inari.PlayScene.CharacterManager:IncreaseFavor+12a)
+define(bytes, 03 C1 41 89 46 28)
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+label(favorAmount)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov eax,[favorAmount]
+
+originalcode:
+//add eax,ecx
+mov [r14+28],eax
+
+exit:
+jmp returnhere
+
+favorAmount:
+dd (int)200
+
+address:
+jmp newmem
+nop
+returnhere:
+
+
+ 
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//add eax,ecx
+//mov [r14+28],eax
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+</LuaScript>
+</CheatTable>
