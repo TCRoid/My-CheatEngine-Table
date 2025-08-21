@@ -3,7 +3,7 @@
   <CheatEntries>
     <CheatEntry>
       <ID>82</ID>
-      <Description>"适用于 Workspace Fantasy v1.3.0 ~ v1.3.1"</Description>
+      <Description>"适用于 Workspace Fantasy v1.3.5"</Description>
       <Color>008000</Color>
       <GroupHeader>1</GroupHeader>
     </CheatEntry>
@@ -486,7 +486,6 @@ end
 [DISABLE]
 
 </AssemblerScript>
-              <CheatEntries/>
             </CheatEntry>
             <CheatEntry>
               <ID>217</ID>
@@ -596,6 +595,73 @@ db bytes
 
 </AssemblerScript>
             </CheatEntry>
+            <CheatEntry>
+              <ID>218</ID>
+              <Description>"修改获取的矿物类型"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>define(address, "aqagz.Game_Mine_BaseConfigs.GetMinePropID"+78)
+define(bytes, 8D 43 9B 83 F8 06)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+label(minePropType)
+registersymbol(minePropType)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov eax,[minePropType]
+
+originalcode:
+//lea eax,[rbx-65]
+cmp eax,06
+
+exit:
+jmp returnhere
+
+minePropType:
+dd (int)0
+
+address:
+jmp newmem
+nop
+returnhere:
+
+
+
+[DISABLE]
+unregistersymbol(minePropType)
+
+dealloc(newmem)
+address:
+db bytes
+//lea eax,[rbx-65]
+//cmp eax,06
+
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>219</ID>
+                  <Description>"矿物类型"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:铜矿
+1:银矿
+2:铜矿
+3:银矿
+4:金矿
+5:水晶
+6:钻石
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>minePropType</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -661,22 +727,23 @@ db bytes
           <ID>48</ID>
           <Description>"使用物品数量不减"</Description>
           <VariableType>Auto Assembler Script</VariableType>
-          <AssemblerScript>define(patchAddress, "SX.PlayerSaveDataController.onRemoveBag"+118)
-define(bytes, 2B 46 18 41 89 46 18)
+          <AssemblerScript>define(address, "SX.PlayerSaveDataController.onRemoveBag"+114)
+define(bytes, 8B 4E 18 41 29 4E 18)
 
 [ENABLE]
-assert(patchAddress,bytes)
+assert(address,bytes)
 
-patchAddress:
+address:
 nop 7
 
- 
- 
+
+
 [DISABLE]
-patchAddress:
+address:
 db bytes
-//sub eax,[rsi+18]
-//mov [r14+18],eax
+//mov ecx,[rsi+18]
+//sub [r14+18],ecx
+
 </AssemblerScript>
         </CheatEntry>
         <CheatEntry>
@@ -684,13 +751,13 @@ db bytes
           <Description>"增加获取物品的数量"</Description>
           <Options moHideChildren="1"/>
           <VariableType>Auto Assembler Script</VariableType>
-          <AssemblerScript>define(patchAddress, "SX.PlayerSaveDataController.onAddBag"+1FD)
-define(bytes, 41 8B 4E 18 03 4E 18)
+          <AssemblerScript>define(address, "SX.PlayerSaveDataController.onAddBag"+1FD)
+define(bytes, 8B 4E 18 41 01 4E 18)
 
 [ENABLE]
-assert(patchAddress,bytes)
+assert(address,bytes)
 
-alloc(newmem,2048,patchAddress)
+alloc(newmem,2048,address)
 label(returnhere)
 label(originalcode)
 label(exit)
@@ -702,9 +769,9 @@ newmem: //this is allocated memory, you have read,write,execute access
 //place your code here
 
 originalcode:
-mov ecx,[r14+18]
-add ecx,[addItemCount]
-//add ecx,[rsi+18]
+//mov ecx,[rsi+18]
+mov ecx,[addItemCount]
+add [r14+18],ecx
 
 exit:
 jmp returnhere
@@ -712,22 +779,22 @@ jmp returnhere
 addItemCount:
 dd (int)100
 
-patchAddress:
+address:
 jmp newmem
 nop 2
 returnhere:
 
 
  
- 
 [DISABLE]
 unregistersymbol(addItemCount)
 
 dealloc(newmem)
-patchAddress:
+address:
 db bytes
-//mov ecx,[r14+18]
-//add ecx,[rsi+18]
+//mov ecx,[rsi+18]
+//add [r14+18],ecx
+
 </AssemblerScript>
           <CheatEntries>
             <CheatEntry>
