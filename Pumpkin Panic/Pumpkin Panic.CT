@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 Pumpkin Panic v1.2.1"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("Pumpkin Panic.exe", true) then return end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"Player"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local classID = mono_findClass("", "playerController")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+local offsets = mono_getClassFieldOffsets(classID)
+if not offsets then return end
+
+PlayerController = {}
+for name, offset in pairs(offsets) do
+    PlayerController[name] = instance + offset
+end
+
+
+local addrMoneyCount = readPointer(PlayerController.moneyCount)
+offsets = mono_getClassFieldOffsets("", "moneyCount")
+if not offsets then return end
+
+MoneyCount = {}
+for name, offset in pairs(offsets) do
+    MoneyCount[name] = addrMoneyCount + offset
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+PlayerController = nil
+MoneyCount = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>13</ID>
+              <Description>"MoneyConut"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>14</ID>
+                  <Description>"count"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.count</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>15</ID>
+                  <Description>"totalMoney"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.totalMoney</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>16</ID>
+                  <Description>"water"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>MoneyCount.water</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>17</ID>
+                  <Description>"maxWater"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>MoneyCount.maxWater</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>18</ID>
+                  <Description>"cseed1Obtained"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.seed1Obtained</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>19</ID>
+                  <Description>"numSeeds1"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numSeeds1</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>20</ID>
+                  <Description>"numSeeds2"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numSeeds2</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>21</ID>
+                  <Description>"numSeeds3"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numSeeds3</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>22</ID>
+                  <Description>"numSeeds4"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numSeeds4</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>23</ID>
+                  <Description>"numSeeds5"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numSeeds5</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>24</ID>
+                  <Description>"numStick"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numStick</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>25</ID>
+                  <Description>"numFiber"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numFiber</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>26</ID>
+                  <Description>"numIrisCoin"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>MoneyCount.numIrisCoin</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"speed"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.speed</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"runSpeedMultiplier"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.runSpeedMultiplier</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"timeWaitCooldownRun"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.timeWaitCooldownRun</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"cooldownRun"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.cooldownRun</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"regularSpeed"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.regularSpeed</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>9</ID>
+              <Description>"stamina"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.stamina</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>10</ID>
+              <Description>"maxStamina"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.maxStamina</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11</ID>
+              <Description>"minStamina"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.minStamina</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"timeAlive"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>PlayerController.timeAlive</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"Oil"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local classID = mono_findClass("", "oilBar")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+local offsets = mono_getClassFieldOffsets(classID)
+if not offsets then return end
+
+OilBar = {}
+for name, offset in pairs(offsets) do
+    OilBar[name] = instance + offset
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+OilBar = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>29</ID>
+              <Description>"oilAmount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>OilBar.oilAmount</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>30</ID>
+              <Description>"maxOil"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>OilBar.maxOil</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>31</ID>
+              <Description>"wastePerSecond"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>OilBar.wastePerSecond</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>32</ID>
+          <Description>"Lantern"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local classID = mono_findClass("", "lantern")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+local offsets = mono_getClassFieldOffsets(classID)
+if not offsets then return end
+
+Lantern = {}
+for name, offset in pairs(offsets) do
+    Lantern[name] = instance + offset
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+Lantern = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>33</ID>
+              <Description>"intensityOff"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>Lantern.intensityOff</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>34</ID>
+              <Description>"intensityOn"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>Lantern.intensityOn</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>35</ID>
+              <Description>"switchTime"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>Lantern.switchTime</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>43</ID>
+              <Description>"range"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>Lantern.lanternLight</Address>
+              <Offsets>
+                <Offset>40</Offset>
+                <Offset>50</Offset>
+                <Offset>10</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>36</ID>
+              <Description>"set_range"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local instance = readPointer(Lantern.lanternLight)
+if not instance or instance == 0 then return end
+
+local range = mono_invokeMethod("UnityEngine.CoreModule", "Light", "get_range", instance, {})
+if not range then return end
+
+local value = InputNumberDialog("set_range", "current range: " .. tostring(range), "")
+if not value then return end
+
+mono_invokeMethod("UnityEngine.CoreModule", "Light", "set_range", instance, {
+    { type = vtSingle, value = value }, -- value, Single
+})
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>28</ID>
+          <Description>"Boat Engine"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local classID = mono_findClass("", "engine")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+local offsets = mono_getClassFieldOffsets(classID)
+if not offsets then return end
+
+Engine = {}
+for name, offset in pairs(offsets) do
+    Engine[name] = instance + offset
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+Engine = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>38</ID>
+              <Description>"progreso"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>Engine.progreso</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>39</ID>
+              <Description>"speed"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>Engine.speed</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>40</ID>
+              <Description>"engineLevel"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>Engine.engineLevel</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>37</ID>
+          <Description>"Light Cycle"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local classID = mono_findClass("", "lightCycle")
+local instance = mono_getClassInstance(classID)
+if not instance then return end
+
+local offsets = mono_getClassFieldOffsets(classID)
+if not offsets then return end
+
+LightCycle = {}
+LightCycle.instance = instance
+for name, offset in pairs(offsets) do
+    LightCycle[name] = instance + offset
+end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+LightCycle = nil
+
+{$ASM}
+
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>46</ID>
+              <Description>"transitionTime"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>LightCycle.transitionTime</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>47</ID>
+              <Description>"isNight"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:False
+1:True
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>LightCycle.isNight</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>48</ID>
+              <Description>"GoNight"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local instance = LightCycle.instance
+if not instance or instance == 0 then return end
+
+mono_invokeMethod("", "lightCycle", "goNight", instance, {})
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>49</ID>
+              <Description>"GoDay"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local instance = LightCycle.instance
+if not instance or instance == 0 then return end
+
+mono_invokeMethod("", "lightCycle", "goDay", instance, {})
+
+{$ASM}
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>44</ID>
+          <Description>"Disable Monster Kill"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(albinoWendigoAddress, albinoWendigoController:OnTriggerStay+185)
+define(clown2Address, clown2:Update+464)
+define(enemyAddress, enemyController:OnTriggerEnter+4d)
+define(shadowMonsterAddress, shadowMonsterController:OnTriggerEnter+4d)
+define(tentacleAddress, tentacleDeath:OnTriggerEnter+35)
+define(wendigoAddress, wendigoController:OnTriggerStay+185)
+
+define(jeBytes, 0F 84)
+define(jmpBytes, 90 E9)
+
+[ENABLE]
+assert(albinoWendigoAddress, jeBytes)
+assert(clown2Address, jeBytes)
+assert(enemyAddress, jeBytes)
+assert(shadowMonsterAddress, jeBytes)
+assert(tentacleAddress, jeBytes)
+assert(wendigoAddress, jeBytes)
+
+albinoWendigoAddress:
+db jmpBytes
+
+clown2Address:
+db jmpBytes
+
+enemyAddress:
+db jmpBytes
+
+shadowMonsterAddress:
+db jmpBytes
+
+tentacleAddress:
+db jmpBytes
+
+wendigoAddress:
+db jmpBytes
+
+
+
+[DISABLE]
+albinoWendigoAddress:
+db jeBytes
+
+clown2Address:
+db jeBytes
+
+enemyAddress:
+db jeBytes
+
+shadowMonsterAddress:
+db jeBytes
+
+tentacleAddress:
+db jeBytes
+
+wendigoAddress:
+db jeBytes
+
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassInstance(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    else
+        namespace = mono_class_getNamespace(classID)
+    end
+
+    local instance = mono_class_findInstancesOfClassListOnly(namespace, classID)
+    if not instance or #instance == 0 then
+        return nil
+    end
+    return instance[1]
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        t[fields[i].name] = fields[i].offset
+    end
+    return t
+end
+
+function InputNumberDialog(caption, prompt, initialstring)
+    local input = inputQuery(caption, prompt or "", initialstring or "")
+    if not input then
+        return nil
+    end
+
+    local value = tonumber(input)
+    if not value then
+        showMessage("数值格式错误！")
+        return nil
+    end
+
+    return value
+end
+
+function mono_invokeMethod(namespace, className, methodName, instance, args)
+    local methodId = mono_findMethod(namespace, className, methodName)
+    if not methodId or methodId == 0 then
+        showMessage("Not found method!")
+        return
+    end
+    return mono_invoke_method(namespace, methodId, instance, args)
+end
+
+</LuaScript>
+</CheatTable>
