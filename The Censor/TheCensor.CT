@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 The Censor v4.1.1"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("TheCensor.exe", true) then return end
+
+local RecordManager = mono_getClassStaticFields("Censorer.Manager", "RecordManager")
+if not RecordManager then return end
+
+pCurrentRecord = RecordManager.CurrentRecord
+
+local namespace = "Censorer.Data.SaveDataV1"
+RecordV1Offs = mono_getClassFieldOffsets(namespace, "RecordV1")
+
+MomentOffs = mono_getClassFieldOffsets(namespace, "Moment")
+PlayerRecordOffs = mono_getClassFieldOffsets(namespace, "PlayerRecord")
+WorldPlotsOffs = mono_getClassFieldOffsets(namespace, "WorldPlots")
+CensorSystemRecordOffs = mono_getClassFieldOffsets(namespace, "CensorSystemRecord")
+CensorWorkRecordOffs = mono_getClassFieldOffsets(namespace, "CensorWorkRecord")
+SingNotesRecordOffs = mono_getClassFieldOffsets(namespace, "SingNotesRecord")
+
+GirlDataRecordOffs = mono_getClassFieldOffsets(namespace, "GirlDataRecord")
+GirlDataBaseRecordOffs = mono_getClassFieldOffsets(namespace, "GirlDataBaseRecord")
+GirlDataSexPartOffs = mono_getClassFieldOffsets(namespace, "GirlDataSexPart")
+
+ApartmentManagerRecordOffs = mono_getClassFieldOffsets(namespace, "ApartmentManagerRecord")
+IdolRecordOffs = mono_getClassFieldOffsets(namespace, "IdolRecord")
+NunRecordOffs = mono_getClassFieldOffsets(namespace, "NunRecord")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pCurrentRecord = nil
+
+RecordV1Offs = nil
+MomentOffs = nil
+PlayerRecordOffs = nil
+WorldPlotsOffs = nil
+CensorSystemRecordOffs = nil
+SingNotesRecordOffs = nil
+GirlDataRecordOffs = nil
+GirlDataBaseRecordOffs = nil
+GirlDataSexPartOffs = nil
+ApartmentManagerRecordOffs = nil
+IdolRecordOffs = nil
+NunRecordOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"Moment"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>13</ID>
+              <Description>"Day"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>MomentOffs.Day</Offset>
+                <Offset>RecordV1Offs.Moment</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"TimePiece"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:Morning
+1:Afternoon
+2:Evening
+3:Night
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>MomentOffs.TimePiece</Offset>
+                <Offset>RecordV1Offs.Moment</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"ActionPoint"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>MomentOffs.ActionPoint</Offset>
+                <Offset>RecordV1Offs.Moment</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"Mood"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>MomentOffs.Mood</Offset>
+                <Offset>RecordV1Offs.Moment</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>7</ID>
+          <Description>"Player"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"Money"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>PlayerRecordOffs.Money</Offset>
+                <Offset>RecordV1Offs.Player</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>9</ID>
+          <Description>"World"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>10</ID>
+              <Description>"Chaos"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>WorldPlotsOffs.Chaos</Offset>
+                <Offset>RecordV1Offs.WorldPlots</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"Work"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"Exp"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>CensorSystemRecordOffs.Exp</Offset>
+                <Offset>RecordV1Offs.CensorSystem</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>17</ID>
+              <Description>"WorkAvailable"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:False
+1:True
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>CensorWorkRecordOffs.WorkAvailable</Offset>
+                <Offset>RecordV1Offs.CensorWork</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>14</ID>
+          <Description>"SingNotes"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>15</ID>
+              <Description>"Exp"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentRecord</Address>
+              <Offsets>
+                <Offset>SingNotesRecordOffs.Exp</Offset>
+                <Offset>RecordV1Offs.SingNotesRecord</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>18</ID>
+          <Description>"GirlsData"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>19</ID>
+              <Description>"ApartmentManager"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>38</ID>
+                  <Description>"FuckedToday"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:False
+1:True
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>ApartmentManagerRecordOffs.FuckedToday</Offset>
+                    <Offset>RecordV1Offs.ApartmentManagerRecord</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>21</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.Level</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>22</ID>
+                  <Description>"Exp"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.Exp</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>23</ID>
+                  <Description>"MaxExp"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.MaxExp</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>24</ID>
+                  <Description>"SexTimes"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.SexTimes</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>25</ID>
+                  <Description>"CreampieTimes"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.CreampieTimes</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>41</ID>
+                  <Description>"SexParts"</Description>
+                  <Options moHideChildren="1"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>42</ID>
+                      <Description>"Oral"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Oral</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>45</ID>
+                      <Description>"Paizuri"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Paizuri</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>44</ID>
+                      <Description>"Hand"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Hand</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>43</ID>
+                      <Description>"Pussy"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Pussy</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>46</ID>
+                      <Description>"EggStatus"</Description>
+                      <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:Normal
+1:Injected
+2:Pregnant
+</DropDownList>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.EggStatus</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.ApartmentManagerGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26</ID>
+              <Description>"Idol"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>39</ID>
+                  <Description>"FuckedToday"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:False
+1:True
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>IdolRecordOffs.FuckedToday</Offset>
+                    <Offset>RecordV1Offs.IdolRecord</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>27</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.Level</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.IdolGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>28</ID>
+                  <Description>"Exp"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.Exp</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.IdolGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>29</ID>
+                  <Description>"MaxExp"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.MaxExp</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.IdolGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>30</ID>
+                  <Description>"SexTimes"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.SexTimes</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.IdolGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>31</ID>
+                  <Description>"CreampieTimes"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.CreampieTimes</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.IdolGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>47</ID>
+                  <Description>"SexParts"</Description>
+                  <Options moHideChildren="1"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>48</ID>
+                      <Description>"Oral"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Oral</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.IdolGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>49</ID>
+                      <Description>"Paizuri"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Paizuri</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.IdolGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>50</ID>
+                      <Description>"Hand"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Hand</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.IdolGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>51</ID>
+                      <Description>"Pussy"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Pussy</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.IdolGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>52</ID>
+                      <Description>"EggStatus"</Description>
+                      <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:Normal
+1:Injected
+2:Pregnant
+</DropDownList>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.EggStatus</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.IdolGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>32</ID>
+              <Description>"Nun"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>40</ID>
+                  <Description>"FuckedToday"</Description>
+                  <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:False
+1:True
+</DropDownList>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>NunRecordOffs.FuckedToday</Offset>
+                    <Offset>RecordV1Offs.NunRecord</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>33</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.Level</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.NunGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>34</ID>
+                  <Description>"Exp"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.Exp</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.NunGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>35</ID>
+                  <Description>"MaxExp"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.MaxExp</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.NunGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>36</ID>
+                  <Description>"SexTimes"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.SexTimes</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.NunGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>37</ID>
+                  <Description>"CreampieTimes"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pCurrentRecord</Address>
+                  <Offsets>
+                    <Offset>GirlDataBaseRecordOffs.CreampieTimes</Offset>
+                    <Offset>GirlDataRecordOffs.BaseRecord</Offset>
+                    <Offset>RecordV1Offs.NunGirlData</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>53</ID>
+                  <Description>"SexParts"</Description>
+                  <Options moHideChildren="1"/>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>54</ID>
+                      <Description>"Oral"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Oral</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.NunGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>55</ID>
+                      <Description>"Paizuri"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Paizuri</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.NunGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>56</ID>
+                      <Description>"Hand"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Hand</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.NunGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>57</ID>
+                      <Description>"Pussy"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.Pussy</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.NunGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>58</ID>
+                      <Description>"EggStatus"</Description>
+                      <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:Normal
+1:Injected
+2:Pregnant
+</DropDownList>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>4 Bytes</VariableType>
+                      <Address>pCurrentRecord</Address>
+                      <Offsets>
+                        <Offset>GirlDataSexPartOffs.EggStatus</Offset>
+                        <Offset>GirlDataRecordOffs.SexPart</Offset>
+                        <Offset>RecordV1Offs.NunGirlData</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassStaticFields(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    local staticBaseAddress = mono_class_getStaticFieldAddress(domain, classID)
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local field = fields[i]
+        if field.isStatic then
+            local name = field.name
+            name = string.gsub(name, "&lt;", "")
+            name = string.gsub(name, "&gt;k__BackingField", "")
+
+            t[name] = staticBaseAddress + field.offset
+        end
+    end
+    return t
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local name = fields[i].name
+        name = string.gsub(name, "&lt;", "")
+        name = string.gsub(name, "&gt;k__BackingField", "")
+
+        t[name] = fields[i].offset
+    end
+    return t
+end
+
+</LuaScript>
+</CheatTable>
