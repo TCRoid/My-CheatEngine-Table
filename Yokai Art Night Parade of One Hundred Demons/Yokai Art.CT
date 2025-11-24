@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 Yokai Art v2.5.2b.007"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("Yokai Art.exe", true) then return end
+
+local sSaveData = mono_getClassStaticFields("", "SaveData")
+pSaveData = sSaveData.Current
+
+local sGameManager = mono_getClassStaticFields("A1", "GameManager")
+pGameManager = sGameManager._Instance
+
+SaveDataOffs = mono_getClassFieldOffsets("", "SaveData")
+GameManagerOffs = mono_getClassFieldOffsets("A1", "GameManager")
+UserCharacterOffs = mono_getClassFieldOffsets("A1", "UserCharacter")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pSaveData = nil
+pGameManager = nil
+
+SaveDataOffs = nil
+GameManagerOffs = nil
+UserCharacterOffs = nil
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"SaveData"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>3</ID>
+              <Description>"Money"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pSaveData</Address>
+              <Offsets>
+                <Offset>SaveDataOffs.Money</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"GameManager"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"WaveIndex"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.WaveIndex</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"bCheatNoDamage"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:False
+1:True
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.bCheatNoDamage</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"bCheatFragSoul"</Description>
+              <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:False
+1:True
+</DropDownList>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.bCheatFragSoul</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"Boost_UpgradeCostReduction"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.Boost_UpgradeCostReduction</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"Boost_BuyUnitCostReduction"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.Boost_BuyUnitCostReduction</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>9</ID>
+              <Description>"Boost_DamageBuff"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.Boost_DamageBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>10</ID>
+              <Description>"Boost_HPBuff"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.Boost_HPBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11</ID>
+              <Description>"Boost_AtkSpeedBuff"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.Boost_AtkSpeedBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"Boost_CritRateBuff"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pGameManager</Address>
+              <Offsets>
+                <Offset>GameManagerOffs.Boost_CritRateBuff</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27</ID>
+              <Description>"UpdateWaveIndex"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local instance = readPointer(pGameManager)
+if instance == 0 then return end
+
+local methodId = mono_findMethod('A1', 'GameManager', 'UpdateWaveIndex')
+if methodId then
+    mono_invoke_method("A1", methodId, instance, {})
+end
+
+{$ASM}
+assert(0,0)
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28</ID>
+              <Description>"Win"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local instance = readPointer(pGameManager)
+if instance == 0 then return end
+
+local methodId = mono_findMethod('A1', 'GameManager', 'Win')
+if methodId then
+    mono_invoke_method("A1", methodId, instance, {
+        { type = vtFloat, value = 3.0 }
+    })
+end
+
+{$ASM}
+assert(0,0)
+
+
+
+[DISABLE]
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>13</ID>
+          <Description>"CurrentUserCharacter"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, UICharacterInfoScreen:RefreshUI+3cb)
+define(bytes, 48 89 86 40 01 00 00)
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+label(pCurrentUserCharacter)
+registersymbol(pCurrentUserCharacter)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov [pCurrentUserCharacter],rax
+
+originalcode:
+mov [rsi+00000140],rax
+
+exit:
+jmp returnhere
+
+pCurrentUserCharacter:
+dq 0
+
+address:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+[DISABLE]
+unregistersymbol(pCurrentUserCharacter)
+
+dealloc(newmem)
+address:
+db bytes
+//mov [rsi+00000140],rax
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>14</ID>
+              <Description>"HeartEXP"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentUserCharacter</Address>
+              <Offsets>
+                <Offset>UserCharacterOffs.HeartEXP</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>15</ID>
+              <Description>"HeartLevel"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pCurrentUserCharacter</Address>
+              <Offsets>
+                <Offset>UserCharacterOffs.HeartLevel</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>19</ID>
+          <Description>"No Card Cooldown"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, UIUnitCard:get_CDMax+b)
+define(bytes, F3 0F 10 80 00 01 00 00)
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+label(value)
+
+newmem: //this is allocated memory, you have read,write,execute access
+movss xmm0,[value]
+movss [rax+00000100],xmm0
+
+originalcode:
+//movss xmm0,[rax+00000100]
+
+exit:
+jmp returnhere
+
+value:
+dd (float)-1.0
+
+UIUnitCard:get_CDMax+b:
+jmp newmem
+nop 3
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//movss xmm0,[rax+00000100]
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>23</ID>
+          <Description>"Unlock Gallery, Comic, Skin"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(addressGallery, UIGalleryModel:set_bLock+13)
+define(addressComic, ComicModel:set_bUnlocked+13)
+define(addressSkin, UISkinItem:set_bLock+13)
+
+define(bytes, 0F B6 45 F0)
+//movzx eax,byte ptr [rbp-10]
+
+[ENABLE]
+assert(addressGallery, bytes)
+assert(addressComic, bytes)
+assert(addressSkin, bytes)
+
+addressGallery:
+mov al,0
+nop 2
+
+addressComic:
+mov al,1
+nop 2
+
+addressSkin:
+mov al,0
+nop 2
+
+
+
+[DISABLE]
+addressGallery:
+db bytes
+
+addressComic:
+db bytes
+
+addressSkin:
+db bytes
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26</ID>
+          <Description>"Set Item Count = 888"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, A1.DataManager:GetUItem+203)
+define(bytes, 48 8B C7 48 8B 7D F0)
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov [rdi+18],378 //UItemData.Owned
+mov [rdi+20],378 //UItemData.Used
+
+originalcode:
+mov rax,rdi
+mov rdi,[rbp-10]
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//mov rax,rdi
+//mov rdi,[rbp-10]
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local name = fields[i].name
+        name = string.gsub(name, "&lt;", "")
+        name = string.gsub(name, "&gt;k__BackingField", "")
+
+        t[name] = fields[i].offset
+    end
+    return t
+end
+
+function mono_getClassStaticFields(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    local staticBaseAddress = mono_class_getStaticFieldAddress(domain, classID)
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local field = fields[i]
+        if field.isStatic then
+            local name = field.name
+            name = string.gsub(name, "&lt;", "")
+            name = string.gsub(name, "&gt;k__BackingField", "")
+
+            t[name] = staticBaseAddress + field.offset
+        end
+    end
+    return t
+end
+
+</LuaScript>
+</CheatTable>
