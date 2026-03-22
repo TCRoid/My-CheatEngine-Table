@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 Take Me To The Dungeon!! v1.6.0"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("Take Me To The Dungeon!!.exe", true) then return end
+
+local sGame = mono_getClassStaticFields("", "Game")
+
+pGameInstance = sGame.Inst
+if readPointer(pGameInstance) == 0 then return end
+
+GameInstanceOffs = mono_getClassFieldOffsets("", "GameInstance")
+
+GamePlayerOffs = mono_getClassFieldOffsets("", "GamePlayer")
+GamePlayer_BasicOffs = mono_getClassFieldOffsets("OHD.Players", "GamePlayer_Basic")
+
+DungeonBaseOffs = mono_getClassFieldOffsets("OHD.Dungeons", "DungeonBase")
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+pGameInstance = nil
+GameInstanceOffs = nil
+
+GamePlayerOffs = nil
+GamePlayer_BasicOffs = nil
+
+DungeonBaseOffs = nil
+
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"Player"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"Money"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pGameInstance</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>GamePlayer_BasicOffs.Money</Offset>
+                <Offset>GamePlayerOffs.Basic</Offset>
+                <Offset>GameInstanceOffs.Player</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>15</ID>
+          <Description>"Dungeon"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>18</ID>
+              <Description>"CurrentRoomCoord"</Description>
+              <Options moHideChildren="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>17</ID>
+                  <Description>"X"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pGameInstance</Address>
+                  <Offsets>
+                    <Offset>DungeonBaseOffs.CurrentRoomCoord+4</Offset>
+                    <Offset>GameInstanceOffs.Dungeon</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>16</ID>
+                  <Description>"Y"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>pGameInstance</Address>
+                  <Offsets>
+                    <Offset>DungeonBaseOffs.CurrentRoomCoord</Offset>
+                    <Offset>GameInstanceOffs.Dungeon</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>20</ID>
+                  <Description>"说明：X=18后再离开房间就到达最终BOSS位置"</Description>
+                  <Color>808080</Color>
+                  <GroupHeader>1</GroupHeader>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>19</ID>
+              <Description>"LeaveRoom"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+
+local instance = readPointer(readPointer(pGameInstance) + GameInstanceOffs.Dungeon)
+if not instance or instance == 0 then return end
+
+mono_invokeMethod("OHD.Dungeons", "DungeonBase", "LeaveRoom", instance, {})
+
+{$ASM}
+assert(0,0)
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+{$ASM}
+
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>23</ID>
+          <Description>"InfinityDungeon"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"Unlimited Money"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>define(address, OHD.Dungeons.Player.InfinityDungeonUna.get_Money+31)
+define(bytes, 8B 40 10 48 83 C4 20)
+define(value, D9038) //888888
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov [rax+10],value
+mov eax,value
+
+originalcode:
+//mov eax,[rax+10]
+add rsp,20
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//mov eax,[rax+10]
+//add rsp,20
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>24</ID>
+              <Description>"Unlimited Soul (重新进入)"</Description>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>define(address, OHD.UI.TitleSoulCrystalPanelUIView.OnCreate+12A)
+define(bytes, 48 8B 48 28 48 85 C9)
+define(value, D9038) //888888
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+mov rcx,[rax+28]
+test rcx,rcx
+
+je exit
+mov [rcx+10],value
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//mov rcx,[rax+28]
+//test rcx,rcx
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"get_CardCost = 0"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, OHD.Card.CardBase.get_CrystalCost+2E)
+define(bytes, 8B 40 10 48 83 C4 20)
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov eax,0
+
+originalcode:
+//mov eax,[rax+10]
+add rsp,20
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//mov eax,[rax+10]
+//add rsp,20
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>12</ID>
+          <Description>"One Hit Kill Monster"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, OHD.Dungeons.Monster.MonsterBase.ReceiveDamage+DC)
+define(bytes, 85 C0 7F 78)
+
+[ENABLE]
+assert(address, bytes)
+
+address:
+db 90 90 90 90
+
+
+ 
+[DISABLE]
+address:
+db bytes
+//test eax,eax
+//jg GameAssembly.dll.il2cpp+559728
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>21</ID>
+          <Description>"One Hit Kill Player"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, OHD.Dungeons.Player.BattleRoomPlayer.ReceiveDamage+99)
+define(bytes, 49 8B D6 48 8B CE)
+
+[ENABLE]
+assert(address, bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+mov rcx,[rsi+48] // HealthRP field offset
+mov [rcx+10],1 // ReactiveProperty value offset
+
+originalcode:
+mov rdx,r14
+mov rcx,rsi
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//mov rdx,r14
+//mov rcx,rsi
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+function mono_getClassInstance(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    else
+        namespace = mono_class_getNamespace(classID)
+    end
+
+    local instance = mono_class_findInstancesOfClassListOnly(namespace, classID)
+    if not instance or #instance == 0 then
+        return nil
+    end
+    return instance[1]
+end
+
+function mono_getClassFieldOffsets(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local name = fields[i].name
+        name = string.gsub(name, "&lt;", "")
+        name = string.gsub(name, "&gt;k__BackingField", "")
+
+        t[name] = fields[i].offset
+    end
+    return t
+end
+
+function mono_getClassStaticFields(classId_or_namespace, className)
+    local classID = classId_or_namespace
+    local namespace = classId_or_namespace
+    if className then
+        classID = mono_findClass(namespace, className)
+    end
+
+    local domains = mono_enumDomains()
+    if not domains or #domains == 0 then
+        return nil
+    end
+
+    local domain = mono_enumDomains()[1]
+    local staticBaseAddress = mono_class_getStaticFieldAddress(domain, classID)
+
+    local fields = mono_class_enumFields(classID)
+    if not fields or #fields == 0 then
+        return nil
+    end
+
+    local t = {}
+    for i = 1, #fields do
+        local field = fields[i]
+        if field.isStatic then
+            local name = field.name
+            name = string.gsub(name, "&lt;", "")
+            name = string.gsub(name, "&gt;k__BackingField", "")
+
+            t[name] = staticBaseAddress + field.offset
+        end
+    end
+    return t
+end
+
+function mono_invokeMethod(namespace, className, methodName, instance, args)
+    local methodId = mono_findMethod(namespace, className, methodName)
+    if not methodId or methodId == 0 then
+        showMessage("Not found method!")
+        return
+    end
+    return mono_invoke_method(namespace, methodId, instance, args)
+end
+
+
+</LuaScript>
+</CheatTable>
