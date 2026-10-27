@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="46">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"适用于 SexCP-069 v1.0.19"</Description>
+      <Color>008000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <Color>FF0000</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+if syntaxcheck then return end
+if not OpenGameProcess("SexCP_069.exe", true) then return end
+
+{$ASM}
+
+
+
+[DISABLE]
+{$LUA}
+if syntaxcheck then return end
+
+{$ASM}
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"无限能量"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Game.MapManager:HasEnoughEnergy+35)
+define(bytes, 48 63 80 A4 00 00 00)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+mov [rax+A4], #888
+
+originalcode:
+movsxd  rax,dword ptr [rax+000000A4]
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop 2
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//movsxd  rax,dword ptr [rax+000000A4]
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"无限能力点 (重新进入技能界面刷新)"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Game.UIHideoutCanvas:RefreshPrompts+5c)
+define(bytes, 48 63 49 18 85 C9)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+mov [rcx+18], #888
+
+originalcode:
+movsxd  rcx,dword ptr [rcx+18]
+test ecx,ecx
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//movsxd  rcx,dword ptr [rcx+18]
+//test ecx,ecx
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"扫描范围  (重新进入技能界面刷新)"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Game.GameAbilityConfig:GetSkillRadius)
+define(bytes, 48 83 EC 18 48 89 34 24)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(pSkillRadius,8)
+registersymbol(pSkillRadius)
+
+address:
+mov eax,[pSkillRadius] // return int
+ret
+
+pSkillRadius:
+dd (int)1000
+
+
+
+[DISABLE]
+dealloc(pSkillRadius)
+unregistersymbol(pSkillRadius)
+
+address:
+db bytes
+//sub rsp,18
+//mov [rsp],rsi
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"pSkillRadius"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>pSkillRadius</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>6</ID>
+          <Description>"移动速度  (重新进入技能界面刷新)"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Game.GameAbilityConfig:GetMoveSpeed)
+define(bytes, 48 83 EC 18 48 89 34 24)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(pMoveSpeed,8)
+registersymbol(pMoveSpeed)
+
+address:
+movss xmm0,[pMoveSpeed] // return float
+ret
+
+pMoveSpeed:
+dd (float)20
+
+
+
+[DISABLE]
+dealloc(pMoveSpeed)
+unregistersymbol(pMoveSpeed)
+
+address:
+db bytes
+//sub rsp,18
+//mov [rsp],rsi
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"pMoveSpeed"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>pMoveSpeed</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"解锁通关功能 (重新进入主菜单)"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Game.GameSystemData:CanAppearPassInfo+b)
+define(bytes, 0F B6 46 24 85 C0)
+
+[ENABLE]
+assert(address,bytes)
+
+alloc(newmem,2048,address)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+mov [rsi+24],1 //_gameCleared = true
+mov [rsi+2c],0 //_unlockedGallery = false
+
+originalcode:
+movzx eax,byte ptr [rsi+24]
+test eax,eax
+
+exit:
+jmp returnhere
+
+address:
+jmp newmem
+nop
+returnhere:
+
+
+
+[DISABLE]
+dealloc(newmem)
+address:
+db bytes
+//movzx eax,byte ptr [rsi+24]
+//test eax,eax
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>9</ID>
+          <Description>"地图 NPC 永远显示 (需要先扫描出来，切换时间刷新)"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address1, Game.MapLifeParameter:CanAppear)
+define(bytes1, 55 48 8B EC 48 83 EC 70)
+
+define(address2, Game.MapLifeData:CanAppear)
+define(bytes2, 55 48 8B EC 48 83 EC 30)
+
+define(address3, Game.MapGirl:IsCanAppear)
+define(bytes3, 55 48 8B EC 48 83 EC 30)
+
+[ENABLE]
+assert(address1,bytes1)
+assert(address2,bytes2)
+assert(address3,bytes3)
+
+address1:
+mov eax,1
+ret
+
+address2:
+mov eax,1
+ret
+
+address3:
+mov eax,1
+ret
+
+
+[DISABLE]
+address1:
+db bytes1
+//push rbp
+//mov rbp,rsp
+//sub rsp,70
+
+address2:
+db bytes2
+//push rbp
+//mov rbp,rsp
+//sub rsp,30
+
+address3:
+db bytes3
+//push rbp
+//mov rbp,rsp
+//sub rsp,30
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"不增加高潮值"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>define(address, Game.HSceneManager:CalculateExcitedValue)
+define(bytes, 55 48 8B EC 48 83 EC 60)
+
+[ENABLE]
+assert(address,bytes)
+
+address:
+ret
+
+
+
+[DISABLE]
+address:
+db bytes
+//push rbp
+//mov rbp,rsp
+//sub rsp,60
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"CalculateBodyInteraction Scale"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>Game.HSceneManager:CalculateBodyInteraction+2f0</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local function AddCompactMenu(defaultCompact)
+    if compactMenuItem then return end
+
+    local state = not defaultCompact
+    local mainForm = getMainForm()
+    local toggleView = function()
+        compactMenuItem.Caption = state and "[ 精简视图 ]" or "[ 完整视图 ]"
+        mainForm.Splitter1.Visible = state
+        mainForm.Panel4.Visible = state
+        mainForm.Panel5.Visible = state
+    end
+
+    local menuParent = mainForm.Menu.Items
+    compactMenuItem = createMenuItem(menuParent)
+    menuParent.add(compactMenuItem)
+    compactMenuItem.OnClick = function()
+        state = not state
+        toggleView()
+    end
+    toggleView()
+end
+
+AddCompactMenu(true)
+
+function OpenGameProcess(processName, enableMono)
+    local pid = getProcessIDFromProcessName(processName)
+    if not pid then
+        showMessage("先启动游戏，然后重新开启此选项")
+        return false
+    end
+    if getOpenedProcessID() ~= pid then
+        openProcess(pid)
+    end
+    if enableMono then
+        if LaunchMonoDataCollector() == 0 then
+            showMessage("激活 Mono 功能失败！")
+            return false
+        end
+    end
+    return true
+end
+
+</LuaScript>
+</CheatTable>
